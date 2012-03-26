@@ -26,6 +26,7 @@ namespace RayTracer.RayTracer
         public View Render()
         {
             var result = new View(SizeX, SizeY);
+            var level = 0;
 
             for (double x = 0; x < SizeX; x++)
             {
@@ -34,18 +35,45 @@ namespace RayTracer.RayTracer
                     var targetPixel = new Vector3D(x, y, 0);
                     var ray = SceneCamera.GenerateRay(targetPixel);
 
-                    var collision = Trace(ray);
+                    var collision = RayTrace(ray, level);
 
                     if (collision.IsCollision)
                     {
-                        var d = Vector3D.Distance(collision.HitPoint, ray.Origin);
-                        var c = (int)Math.Ceiling(((1000 - d) / 100) * 255);
+                        //Lighting
+                        var normal = collision.GetNormal();
+                        double red = 0;
+                        double blue = 0;
+                        double green = 0;
 
-                        if (c < 0)
-                            c = 0;
-                        if (c > 255)
-                            c = 255;
-                        result.Pixels[(int)x, (int)y] = new View.Point { color = new Color(c, c, c), depth = d };
+                        foreach (LightSource light in SceneLights)
+                        {
+                            var dist = light.Location - collision.HitPoint;
+                            if (normal * dist <= 0)
+                                continue; //light source is behind 
+
+                            var t = Math.Sqrt(dist * dist);
+                            if (t < 0)
+                                continue; //Avoid division by zero
+
+                            var lightRay = new Ray(collision.HitPoint, (1 / t) * dist);
+
+                            //Check if object in shadows
+                            var shadowCollision = RayTrace(lightRay, level);
+                            if (!shadowCollision.IsCollision)
+                            {
+                                //lambert
+                                var lambert = (lightRay.Direction * normal) * collision.HitObject.Material.LambertCoeff; //Lambertian coeffecient
+                                red += lambert * (collision.HitObject.Color.R / 255) * (light.Color.R / 255);
+                                green += lambert * (collision.HitObject.Color.G / 255) * (light.Color.G / 255);
+                                blue += lambert * (collision.HitObject.Color.B / 255) * (light.Color.B / 255);
+                            }
+                        }
+
+                        var d = Vector3D.Distance(collision.HitPoint, ray.Origin);
+                        var r = (int)Math.Ceiling(red) * 255;
+                        var g = (int)Math.Ceiling(green) * 255;
+                        var b = (int)Math.Ceiling(blue) * 255;
+                        result.Pixels[(int)x, (int)y] = new View.Point { color = new Color(r, g, b), depth = d };
                     }
                     else
                         result.Pixels[(int)x, (int)y] = new View.Point { color = new Color(), depth = Globals.infinity };
@@ -56,7 +84,7 @@ namespace RayTracer.RayTracer
             return result;
         }
 
-        public Collision Trace(Ray ray)
+        public Collision RayTrace(Ray ray, int level)
         {
             var minT = Globals.infinity;
             SolidObject hitObject = null;

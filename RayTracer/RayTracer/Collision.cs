@@ -17,5 +17,10 @@ namespace RayTracer.RayTracer
             HitPoint = hitPoint;
             HitObject = hitObject;
         }
+
+        public Vector3D GetNormal()
+        {
+            return HitObject.GetNormal(HitPoint);
+        }
     }
 }

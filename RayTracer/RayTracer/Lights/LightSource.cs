@@ -7,6 +7,8 @@ namespace RayTracer.RayTracer
 {
     public abstract class LightSource
     {
+        public Vector3D Location { get; set; }
 
+        public Color Color { get; set; }
     }
 }

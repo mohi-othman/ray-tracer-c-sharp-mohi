@@ -30,16 +30,30 @@ namespace RayTracer
 
             //var camera = new OrthographicCamera(1000);
             var camera = new ConicalCamera(new Vector3D(320, 240, -700));
+            
             var sphere = new Sphere(new Vector3D(233, 290, 0), 100);
-            var sphere2 = new Sphere(new Vector3D(353, 350, 50), 90);
+            sphere.Material = new RayTracer.Materials.LambertianMaterial();
+            sphere.Color = new RayTracer.Color(100, 50, 0);
+
+            var sphere2 = new Sphere(new Vector3D(353, 350, 200), 90);
+            sphere2.Material = new RayTracer.Materials.LambertianMaterial();
+            sphere2.Color = new RayTracer.Color(0, 50, 75);
 
             var listObj = new List<SolidObject>();
             listObj.Add(sphere);
             listObj.Add(sphere2);
 
-            var scene = new RayTracer.Scene(640, 480, camera, listObj, null);
+            var light = new RayTracer.Lights.PointLight();
+            light.Location = new Vector3D(120, 300, -700);
+            light.Color = new RayTracer.Color(255, 255, 255);
+
+            var listLight = new List<LightSource>();
+            listLight.Add(light);
+
+            var scene = new RayTracer.Scene(640, 480, camera, listObj, listLight);
             var picArray = scene.Render();
             var picture = picArray.ExportDepthImage();
+            //var picture = picArray.ExportImage();
             
             MemoryStream ms = new MemoryStream();
             picture.Save(ms, System.Drawing.Imaging.ImageFormat.Png);

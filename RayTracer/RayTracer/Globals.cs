@@ -9,5 +9,6 @@ namespace RayTracer.RayTracer
     {
         public static double infinity = double.PositiveInfinity;
         public static double epsilon = double.Epsilon;
+        public static int maxDepth = 10;
     }
 }

@@ -53,5 +53,15 @@ namespace RayTracer.RayTracer.Objects
         }
 
 
+
+        public override Vector3D GetNormal(Vector3D point)
+        {
+            var n = point - Location;
+            var temp = n * n;
+            temp = 1 / Math.Sqrt(temp);
+            n = temp * n;
+
+            return n;
+        }
     }
 }

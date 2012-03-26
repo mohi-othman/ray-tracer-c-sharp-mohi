@@ -25,6 +25,25 @@ namespace RayTracer.RayTracer
             public double depth;
         }
 
+        public System.Drawing.Bitmap ExportImage()
+        {
+            var picture = new System.Drawing.Bitmap(this.width, this.height);
+
+            for (int x = 0; x < this.width; x++)
+            {
+                for (int y = 0; y < this.height; y++)
+                {
+                    var r = (int)Pixels[x, y].color.R;
+                    var g = (int)Pixels[x, y].color.G;
+                    var b = (int)Pixels[x, y].color.B;
+                    picture.SetPixel(x, y, System.Drawing.Color.FromArgb(r, g, b));
+
+                }
+            }
+
+            return picture;
+        }
+
         public System.Drawing.Bitmap ExportDepthImage()
         {
             var picture = new System.Drawing.Bitmap(this.width, this.height);
