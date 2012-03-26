@@ -52,8 +52,8 @@ namespace RayTracer
 
             var scene = new RayTracer.Scene(640, 480, camera, listObj, listLight);
             var picArray = scene.Render();
-            var picture = picArray.ExportDepthImage();
-            //var picture = picArray.ExportImage();
+            //var picture = picArray.ExportDepthImage();
+            var picture = picArray.ExportImage();
             
             MemoryStream ms = new MemoryStream();
             picture.Save(ms, System.Drawing.Imaging.ImageFormat.Png);

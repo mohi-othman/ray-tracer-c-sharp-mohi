@@ -62,17 +62,20 @@ namespace RayTracer.RayTracer
                             if (!shadowCollision.IsCollision)
                             {
                                 //lambert
-                                var lambert = (lightRay.Direction * normal) * collision.HitObject.Material.LambertCoeff; //Lambertian coeffecient
-                                red += lambert * (collision.HitObject.Color.R / 255) * (light.Color.R / 255);
-                                green += lambert * (collision.HitObject.Color.G / 255) * (light.Color.G / 255);
-                                blue += lambert * (collision.HitObject.Color.B / 255) * (light.Color.B / 255);
+                                var lambert = (lightRay.Direction * normal);// * collision.HitObject.Material.LambertCoeff; //Lambertian coeffecient
+                                //red += lambert * (collision.HitObject.Color.R / 255) * (light.Color.R / 255);
+                                //green += lambert * (collision.HitObject.Color.G / 255) * (light.Color.G / 255);
+                                //blue += lambert * (collision.HitObject.Color.B / 255) * (light.Color.B / 255);
+                                red = lambert * (collision.HitObject.Color.R);
+                                green = lambert * (collision.HitObject.Color.G);
+                                blue = lambert * (collision.HitObject.Color.B);
                             }
                         }
 
                         var d = Vector3D.Distance(collision.HitPoint, ray.Origin);
-                        var r = (int)Math.Ceiling(red) * 255;
-                        var g = (int)Math.Ceiling(green) * 255;
-                        var b = (int)Math.Ceiling(blue) * 255;
+                        var r = (int)Math.Ceiling(red) ;
+                        var g = (int)Math.Ceiling(green) ;
+                        var b = (int)Math.Ceiling(blue) ;
                         result.Pixels[(int)x, (int)y] = new View.Point { color = new Color(r, g, b), depth = d };
                     }
                     else
