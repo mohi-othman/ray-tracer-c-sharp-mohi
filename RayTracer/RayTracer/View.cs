@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Drawing;
 
 namespace RayTracer.RayTracer
 {
@@ -22,6 +23,45 @@ namespace RayTracer.RayTracer
         {
             public Color color;
             public double depth;
+        }
+
+        public System.Drawing.Bitmap ExportDepthImage()
+        {
+            var picture = new System.Drawing.Bitmap(this.width, this.height);
+            var depthList = new List<double>();
+
+            for (int x = 0; x < this.width; x++)
+            {
+                for (int y = 0; y < this.height; y++)
+                {
+                    var d = Pixels[x, y].depth;
+                    if (d < Globals.infinity)
+                        depthList.Add(d);
+                }
+            }
+
+            var maxDepth = depthList.Max();
+            var minDepth = depthList.Min();
+
+            for (int x = 0; x < this.width; x++)
+            {
+                for (int y = 0; y < this.height; y++)
+                {
+                    var d = Pixels[x, y].depth;
+                    if (d < Globals.infinity)
+                    {
+                        var c = (int)Math.Ceiling((maxDepth - d) / (maxDepth - minDepth) * 220) + 30;
+
+                        picture.SetPixel(x, y, System.Drawing.Color.FromArgb(c, c, c));
+                    }
+                    else
+                    {
+                        picture.SetPixel(x, y, System.Drawing.Color.FromArgb(0, 0, 0));
+                    }
+                }
+            }
+
+            return picture;
         }
     }
 

@@ -39,40 +39,8 @@ namespace RayTracer
 
             var scene = new RayTracer.Scene(640, 480, camera, listObj, null);
             var picArray = scene.Render();
-            var picture = new System.Drawing.Bitmap(scene.SizeX, scene.SizeY);
-            var depthList = new List<double>();
-
-            for (int x = 0; x < scene.SizeX; x++)
-            {
-                for (int y = 0; y < scene.SizeY; y++)
-                {
-                    var d = picArray.Pixels[x, y].depth;
-                    if (d < Globals.infinity)
-                        depthList.Add(d);
-                }
-            }
-
-            var maxDepth = depthList.Max();
-            var minDepth = depthList.Min();
-
-            for (int x = 0; x < scene.SizeX; x++)
-            {
-                for (int y = 0; y < scene.SizeY; y++)
-                {
-                    var d = picArray.Pixels[x, y].depth;
-                    if (d < Globals.infinity)
-                    {
-                        var c = (int)Math.Ceiling((maxDepth - d) / (maxDepth - minDepth) * 220) + 30;
-
-                        picture.SetPixel(x, y, System.Drawing.Color.FromArgb(c, c, c));
-                    }
-                    else
-                    {
-                        picture.SetPixel(x, y, System.Drawing.Color.FromArgb(0, 0, 0));
-                    }
-                }
-            }
-
+            var picture = picArray.ExportDepthImage();
+            
             MemoryStream ms = new MemoryStream();
             picture.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
             ms.Position = 0;
