@@ -43,12 +43,17 @@ namespace RayTracer
             listObj.Add(sphere);
             listObj.Add(sphere2);
 
-            var light = new RayTracer.Lights.PointLight();
-            light.Location = new Vector3D(320, 240, -700);
-            light.Color = new RayTracer.Color(255, 255, 255);
+            var light1 = new RayTracer.Lights.PointLight();
+            light1.Location = new Vector3D(320, 240, -700);
+            light1.Color = new RayTracer.Color(255, 255, 255);
+
+            var light2 = new RayTracer.Lights.PointLight();
+            light2.Location = new Vector3D(220, 100, -500);
+            light2.Color = new RayTracer.Color(100, 100, 100);
 
             var listLight = new List<LightSource>();
-            listLight.Add(light);
+            listLight.Add(light1);
+            listLight.Add(light2);
 
             var scene = new RayTracer.Scene(640, 480, camera, listObj, listLight);
             var picArray = scene.Render();
