@@ -36,3 +36,16 @@ C:\Users\muhyedeno\Documents\RayTracerMohi\RayTracer\obj\Debug\ResGen.read.1.tlo
 C:\Users\muhyedeno\Documents\RayTracerMohi\RayTracer\obj\Debug\ResGen.write.1.tlog
 C:\Users\muhyedeno\Documents\RayTracerMohi\RayTracer\bin\Debug\RayTracer.exe
 C:\Users\muhyedeno\Documents\RayTracerMohi\RayTracer\bin\Debug\RayTracer.pdb
+C:\Users\Mohi\Documents\Visual Studio 2010\Projects\RayTraceMohi_CSharp\RayTracer\obj\Debug\RayTracer.exe
+C:\Users\Mohi\Documents\Visual Studio 2010\Projects\RayTraceMohi_CSharp\RayTracer\obj\Debug\RayTracer.pdb
+C:\Users\Mohi\Documents\Visual Studio 2010\Projects\RayTraceMohi_CSharp\RayTracer\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Mohi\Documents\Visual Studio 2010\Projects\RayTraceMohi_CSharp\RayTracer\obj\Debug\Window1.baml
+C:\Users\Mohi\Documents\Visual Studio 2010\Projects\RayTraceMohi_CSharp\RayTracer\obj\Debug\Window1.g.cs
+C:\Users\Mohi\Documents\Visual Studio 2010\Projects\RayTraceMohi_CSharp\RayTracer\obj\Debug\App.g.cs
+C:\Users\Mohi\Documents\Visual Studio 2010\Projects\RayTraceMohi_CSharp\RayTracer\obj\Debug\RayTracer_MarkupCompile.cache
+C:\Users\Mohi\Documents\Visual Studio 2010\Projects\RayTraceMohi_CSharp\RayTracer\obj\Debug\RayTracer.g.resources
+C:\Users\Mohi\Documents\Visual Studio 2010\Projects\RayTraceMohi_CSharp\RayTracer\obj\Debug\RayTracer.Properties.Resources.resources
+C:\Users\Mohi\Documents\Visual Studio 2010\Projects\RayTraceMohi_CSharp\RayTracer\obj\Debug\ResGen.read.1.tlog
+C:\Users\Mohi\Documents\Visual Studio 2010\Projects\RayTraceMohi_CSharp\RayTracer\obj\Debug\ResGen.write.1.tlog
+C:\Users\Mohi\Documents\Visual Studio 2010\Projects\RayTraceMohi_CSharp\RayTracer\bin\Debug\RayTracer.exe
+C:\Users\Mohi\Documents\Visual Studio 2010\Projects\RayTraceMohi_CSharp\RayTracer\bin\Debug\RayTracer.pdb

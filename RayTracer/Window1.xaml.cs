@@ -33,18 +33,18 @@ namespace RayTracer
             
             var sphere = new Sphere(new Vector3D(233, 290, 0), 100);
             sphere.Material = new RayTracer.Materials.LambertianMaterial();
-            sphere.Color = new RayTracer.Color(100, 50, 0);
+            sphere.Color = new RayTracer.Color(200, 50, 0);
 
             var sphere2 = new Sphere(new Vector3D(353, 350, 200), 90);
             sphere2.Material = new RayTracer.Materials.LambertianMaterial();
-            sphere2.Color = new RayTracer.Color(0, 50, 75);
+            sphere2.Color = new RayTracer.Color(0, 250, 75);
 
             var listObj = new List<SolidObject>();
             listObj.Add(sphere);
             listObj.Add(sphere2);
 
             var light = new RayTracer.Lights.PointLight();
-            light.Location = new Vector3D(120, 300, -700);
+            light.Location = new Vector3D(320, 240, -700);
             light.Color = new RayTracer.Color(255, 255, 255);
 
             var listLight = new List<LightSource>();
