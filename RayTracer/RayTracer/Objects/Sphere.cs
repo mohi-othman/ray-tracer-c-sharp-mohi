@@ -17,6 +17,7 @@ namespace RayTracer.RayTracer.Objects
 
         public override double Intersection(Ray ray)
         {
+
             var A = ray.Direction * ray.Direction;
             var B = 2 * (ray.Origin - this.Location) * ray.Direction;
             var C = (ray.Origin - this.Location) * (ray.Origin - this.Location) - Radius * Radius;

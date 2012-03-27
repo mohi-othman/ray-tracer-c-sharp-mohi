@@ -5,21 +5,27 @@ using System.Text;
 
 namespace RayTracer.RayTracer.Materials
 {
-    class LambertianMaterial: BaseMaterial
+    class LambertianMaterial : BaseMaterial
     {
-        public override bool IsReflective
+        public override double ReflectionCoeff
         {
-            get { return false; }
+            get { return 0; }
         }
 
-        public override double ReflectionCoeff
+        public override double RefractionCoeff
         {
             get { return 0; }
         }
 
         public override double LambertCoeff
         {
-            get { return 1.0; }
+            get { return 1; }
         }
+
+        public LambertianMaterial(Color color)
+        {
+            Color = color;
+        }
+
     }
 }

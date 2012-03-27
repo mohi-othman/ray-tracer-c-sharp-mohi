@@ -32,16 +32,8 @@ namespace RayTracer.RayTracer
             for (int x = 0; x < this.width; x++)
             {
                 for (int y = 0; y < this.height; y++)
-                {
-                    var r = (int)Pixels[x, y].color.R;
-                    var g = (int)Pixels[x, y].color.G;
-                    var b = (int)Pixels[x, y].color.B;
-
-                    r = (r > 255) ? 255 : r;
-                    g = (g > 255) ? 255 : g;
-                    b = (b > 255) ? 255 : b;
-                    picture.SetPixel(x, y, System.Drawing.Color.FromArgb(r, g, b));
-
+                {                    
+                    picture.SetPixel(x, y, Pixels[x, y].color.Convert());
                 }
             }
 

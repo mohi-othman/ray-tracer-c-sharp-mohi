@@ -64,5 +64,19 @@ namespace RayTracer.RayTracer
             return Math.Sqrt(xd * xd + yd * yd + zd * zd);
         }
 
+        public Vector3D Inverse()
+        {
+            return new Vector3D(-x, -y, -z);
+        }
+
+        public double Magnitude()
+        {
+            return Math.Sqrt(x * x + y * y + z * z);
+        }
+
+        public Vector3D Multiply(Vector3D other)
+        {
+            return new Vector3D(this.x * other.x, this.y * other.y, this.z * other.z);
+        }
     }
 }

@@ -10,5 +10,7 @@ namespace RayTracer.RayTracer
         public Vector3D Location { get; set; }
 
         public Color Color { get; set; }
+
+        public double Intensity { get; set; }
     }
 }

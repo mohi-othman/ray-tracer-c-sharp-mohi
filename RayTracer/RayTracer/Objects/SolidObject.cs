@@ -11,9 +11,7 @@ namespace RayTracer.RayTracer
 
         public Vector3D Location { get; set; }
 
-        public Materials.BaseMaterial Material { get; set; }
-
-        public Color Color { get; set; }
+        public Materials.BaseMaterial Material { get; set; }               
                 
         public abstract double Intersection(Ray ray);
 

@@ -9,18 +9,22 @@ namespace RayTracer.RayTracer
     {
         public int SizeX { get; set; }
         public int SizeY { get; set; }
+        public Color AmbientLight { get; set; }
         public Camera SceneCamera { get; set; }
         public List<SolidObject> SceneObjects { get; set; }
         public List<LightSource> SceneLights { get; set; }
         public Vector3D TopLeftOrigin { get; set; }
+        public Shaders.Shader SceneShader { get; set; }
 
-        public Scene(int sizeX, int sizeY, Camera sceneCamera, List<SolidObject> sceneObjects, List<LightSource> sceneLights)
+        public Scene(int sizeX, int sizeY, Camera sceneCamera, Color ambientLight, List<SolidObject> sceneObjects, List<LightSource> sceneLights, Shaders.Shader sceneShader)
         {
             SizeX = sizeX;
             SizeY = sizeY;
             SceneCamera = sceneCamera;
             SceneObjects = sceneObjects;
             SceneLights = sceneLights;
+            AmbientLight = ambientLight;
+            SceneShader = sceneShader;
         }
 
         public View Render()
@@ -35,51 +39,78 @@ namespace RayTracer.RayTracer
                     var targetPixel = new Vector3D(x, y, 0);
                     var ray = SceneCamera.GenerateRay(targetPixel);
 
-                    var collision = RayTrace(ray, level);
+                    var point = RayTrace(ray, level);
 
-                    if (collision.IsCollision)
-                    {
-                        //Lighting
-                        var normal = collision.GetNormal();
-                        double diffuse = 0;
-                        double r = 0, g = 0, b = 0;
-
-                        foreach (LightSource light in SceneLights)
-                        {
-                            var dist = light.Location - collision.HitPoint;
-                            if (normal * dist <= 0)
-                                continue; //light source is behind 
-
-                            var t = Math.Sqrt(dist * dist);
-                            if (t < 0)
-                                continue; //Avoid division by zero
-
-                            var lightRay = new Ray(collision.HitPoint, (1 / t) * dist);
-
-                            //Check if object in shadows
-                            var shadowCollision = RayTrace(lightRay, level);
-                            if (!shadowCollision.IsCollision)
-                            {
-                                //lambert
-                                diffuse += (lightRay.Direction * normal);// * collision.HitObject.Material.LambertCoeff; //Lambertian coeffecient
-                                r += diffuse * (collision.HitObject.Color.R / 255) * (light.Color.R / 255);
-                                g += diffuse * (collision.HitObject.Color.G / 255) *( light.Color.G / 255);
-                                b += diffuse * (collision.HitObject.Color.B / 255) *( light.Color.B / 255);
-                            }
-                        }
-
-                        result.Pixels[(int)x, (int)y] = new View.Point { color = new Color(r * 255, g * 255, b * 255), depth = collision.Distance };
-                    }
-                    else
-                        result.Pixels[(int)x, (int)y] = new View.Point { color = new Color(), depth = Globals.infinity };
-
+                    result.Pixels[(int)x, (int)y] = point;
                 }
             }
 
             return result;
         }
 
-        public Collision RayTrace(Ray ray, int level)
+        public View.Point RayTrace(Ray ray, int level)
+        {
+            var collision = Trace(ray);
+
+            if (collision.IsCollision)
+            {
+                //Lighting
+                var normal = collision.GetNormal();
+
+                var newColor = new Color();
+
+                foreach (LightSource light in SceneLights)
+                {
+                    var dist = light.Location - collision.HitPoint;
+                    if (normal * dist <= 0)
+                        continue; //light source is behind 
+
+                    var t = Math.Sqrt(dist * dist);
+                    if (t < 0)
+                        continue; //Avoid division by zero
+                    var lightDir = (1 / t) * dist;
+                    var lightRay = new Ray(collision.HitPoint + lightDir * Globals.epsilon, lightDir);
+
+                    //Check if object in shadows
+                    var shadowCollision = Trace(lightRay);
+
+                    if (!shadowCollision.IsCollision)
+                    {
+                        newColor += SceneShader.GetColor(collision.HitObject, light, ray.Direction, lightRay.Direction, normal);                        
+                    }
+                }
+
+                //Reflection
+                if (collision.HitObject.Material.ReflectionCoeff > 0 && level <= Globals.maxDepth)
+                {
+                    var c1 = -(ray.Direction * normal);
+                    var reflectionDirection = ray.Direction + (2 * normal * c1);
+                    var reflectionRay = new Ray(collision.HitPoint + reflectionDirection * Globals.epsilon, reflectionDirection);
+                    var reflectionColor = new Color();
+
+                    var newPoint = RayTrace(reflectionRay, level + 1);
+
+                    reflectionColor = newPoint.color;
+                    //newColor += newPoint.color * collision.HitObject.Material.ReflectionCoeff * collision.HitObject.Material.Color;
+                    newColor += reflectionColor * collision.HitObject.Material.ReflectionCoeff * collision.HitObject.Material.Color;
+                    level += 1;
+
+                }
+
+                //Refraction
+                if (collision.HitObject.Material.RefractionCoeff > 0 && level <= Globals.maxDepth)
+                {
+                }
+
+                newColor += AmbientLight;
+
+                return new View.Point { color = newColor, depth = collision.Distance };
+            }
+            else
+                return new View.Point { color = new Color(), depth = Globals.infinity };
+        }
+
+        public Collision Trace(Ray ray)
         {
             var minT = Globals.infinity;
             SolidObject hitObject = null;
@@ -104,6 +135,8 @@ namespace RayTracer.RayTracer
             }
 
         }
+
+
 
     }
 }

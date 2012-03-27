@@ -89,7 +89,13 @@
     </Compile>
     <Compile Include="RayTracer\Lights\PointLight.cs" />
     <Compile Include="RayTracer\Materials\BaseMaterial.cs" />
+    <Compile Include="RayTracer\Materials\CustomMaterial.cs" />
     <Compile Include="RayTracer\Materials\LambertianMaterial.cs" />
+    <Compile Include="RayTracer\Objects\Plane.cs" />
+    <Compile Include="RayTracer\Objects\Rectangle.cs" />
+    <Compile Include="RayTracer\Shaders\DiffuseShader.cs" />
+    <Compile Include="RayTracer\Shaders\Shader.cs" />
+    <Compile Include="RayTracer\Shaders\SpecularShader.cs" />
     <Compile Include="Window1.xaml.cs">
       <DependentUpon>Window1.xaml</DependentUpon>
       <SubType>Code</SubType>

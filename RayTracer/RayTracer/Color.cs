@@ -28,7 +28,42 @@ namespace RayTracer.RayTracer
 
         public System.Drawing.Color Convert()
         {
-            return System.Drawing.Color.FromArgb((int)R, (int)G, (int)B);
+            var r = (int)Math.Ceiling(R * 255);
+            var g = (int)Math.Ceiling(G * 255);
+            var b = (int)Math.Ceiling(B * 255);
+
+            if (r > 255)
+                r = 255;
+            if (g > 255)
+                g = 255;
+            if (b > 255)
+                b = 255;
+            return System.Drawing.Color.FromArgb(r, g, b);
+        }
+
+        public static Color operator +(Color a, Color b)
+        {
+            return new Color(a.R + b.R, a.G + b.G, a.B + b.B);
+        }
+
+        public static Color operator -(Color a, Color b)
+        {
+            return new Color(a.R - b.R, a.G - b.G, a.B - b.B);
+        }
+
+        public static Color operator *(Color a, Color b)
+        {
+            return new Color(a.R * b.R, a.G * b.G, a.B * b.B);
+        }
+
+        public static Color operator *(double x, Color C)
+        {
+            return new Color(C.R * x, C.G * x, C.B * x);
+        }
+
+        public static Color operator *(Color C, double x)
+        {
+            return x * C;
         }
     }
 }
