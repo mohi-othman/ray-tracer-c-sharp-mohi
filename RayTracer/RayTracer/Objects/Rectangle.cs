@@ -5,7 +5,7 @@ using System.Text;
 
 namespace RayTracer.RayTracer.Objects
 {
-    public class Rectangle: SolidObject
+    public class Rectangle: Primitive
     {
         public Vector3D P1 { get; set; }
         public Vector3D P2 { get; set; }
@@ -17,7 +17,7 @@ namespace RayTracer.RayTracer.Objects
             var N = GetNormal(null);
             var t = N * (P1 - ray.Origin) / (ray.Origin * ray.Direction);
 
-            if (t > 0)
+            if (t > Globals.epsilon)
             {
                 var p = ray.Origin + t * ray.Direction;
                 return NoColision;

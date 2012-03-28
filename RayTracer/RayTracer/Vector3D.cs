@@ -12,7 +12,7 @@ namespace RayTracer.RayTracer
         public double z { get; set; }
 
         public Vector3D(double X, double Y, double Z)
-        {
+        {            
             x = X;
             y = Y;
             z = Z;
@@ -74,9 +74,16 @@ namespace RayTracer.RayTracer
             return Math.Sqrt(x * x + y * y + z * z);
         }
 
+        public Vector3D Normalize()
+        {
+            var a = this.Magnitude();
+            return new Vector3D(x / a, y / a, z / a);
+        }
         public Vector3D Multiply(Vector3D other)
         {
-            return new Vector3D(this.x * other.x, this.y * other.y, this.z * other.z);
+            return new Vector3D(this.y * other.z - this.z * other.y, this.z * other.x - this.x * other.z, this.x * other.y - this.y * other.x);
         }
+
+
     }
 }

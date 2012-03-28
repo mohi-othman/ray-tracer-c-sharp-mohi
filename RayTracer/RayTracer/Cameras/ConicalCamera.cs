@@ -14,8 +14,9 @@ namespace RayTracer.RayTracer.Cameras
             CameraLocation = cameraLocation;
         }
         public override Ray GenerateRay(Vector3D target)
-        {            
-            return new Ray(CameraLocation, target-CameraLocation);
+        {
+            var direction = target - CameraLocation;
+            return new Ray(CameraLocation, direction);
         }
     }
 }

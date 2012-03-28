@@ -11,12 +11,15 @@ namespace RayTracer.RayTracer
         public int SizeY { get; set; }
         public Color AmbientLight { get; set; }
         public Camera SceneCamera { get; set; }
-        public List<SolidObject> SceneObjects { get; set; }
+        public List<Primitive> SceneObjects { get; set; }
         public List<LightSource> SceneLights { get; set; }
         public Vector3D TopLeftOrigin { get; set; }
         public Shaders.Shader SceneShader { get; set; }
 
-        public Scene(int sizeX, int sizeY, Camera sceneCamera, Color ambientLight, List<SolidObject> sceneObjects, List<LightSource> sceneLights, Shaders.Shader sceneShader)
+        const double worldHeight = 6.0;
+        const double worldWidth = 8.0;
+
+        public Scene(int sizeX, int sizeY, Camera sceneCamera, Color ambientLight, List<Primitive> sceneObjects, List<LightSource> sceneLights, Shaders.Shader sceneShader)
         {
             SizeX = sizeX;
             SizeY = sizeY;
@@ -32,16 +35,24 @@ namespace RayTracer.RayTracer
             var result = new View(SizeX, SizeY);
             var level = 0;
 
+            var xd = worldWidth / SizeX;
+            var yd = worldHeight / SizeY;
+
             for (double x = 0; x < SizeX; x++)
             {
                 for (double y = 0; y < SizeY; y++)
                 {
-                    var targetPixel = new Vector3D(x, y, 0);
+                    var wx = x * xd - worldWidth / 2;
+                    var wy = worldHeight / 2 - y * yd;
+
+                    var targetPixel = new Vector3D(wx, wy, 0);
+
                     var ray = SceneCamera.GenerateRay(targetPixel);
 
                     var point = RayTrace(ray, level);
 
                     result.Pixels[(int)x, (int)y] = point;
+
                 }
             }
 
@@ -76,25 +87,20 @@ namespace RayTracer.RayTracer
 
                     if (!shadowCollision.IsCollision)
                     {
-                        newColor += SceneShader.GetColor(collision.HitObject, light, ray.Direction, lightRay.Direction, normal);                        
+                        newColor += SceneShader.GetColor(collision.HitObject, light, ray.Direction, lightRay.Direction, normal);
                     }
                 }
 
                 //Reflection
                 if (collision.HitObject.Material.ReflectionCoeff > 0 && level <= Globals.maxDepth)
                 {
-                    var c1 = -(ray.Direction * normal);
-                    var reflectionDirection = ray.Direction + (2 * normal * c1);
+                    var reflectionDirection = ray.Direction - (2 * (ray.Direction * normal) * normal);
                     var reflectionRay = new Ray(collision.HitPoint + reflectionDirection * Globals.epsilon, reflectionDirection);
-                    var reflectionColor = new Color();
 
                     var newPoint = RayTrace(reflectionRay, level + 1);
 
-                    reflectionColor = newPoint.color;
                     //newColor += newPoint.color * collision.HitObject.Material.ReflectionCoeff * collision.HitObject.Material.Color;
-                    newColor += reflectionColor * collision.HitObject.Material.ReflectionCoeff * collision.HitObject.Material.Color;
-                    level += 1;
-
+                    newColor += newPoint.color * collision.HitObject.Material.ReflectionCoeff * collision.HitObject.Material.Color;
                 }
 
                 //Refraction
@@ -113,12 +119,12 @@ namespace RayTracer.RayTracer
         public Collision Trace(Ray ray)
         {
             var minT = Globals.infinity;
-            SolidObject hitObject = null;
+            Primitive hitObject = null;
 
-            foreach (SolidObject obj in SceneObjects)
+            foreach (Primitive obj in SceneObjects)
             {
                 var t = obj.Intersection(ray);
-                if (t != SolidObject.NoColision && t < minT)
+                if (t != Primitive.NoColision && t < minT)
                 {
                     minT = t;
                     hitObject = obj;

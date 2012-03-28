@@ -11,6 +11,6 @@ namespace RayTracer.RayTracer
 
         public Color Color { get; set; }
 
-        public double Intensity { get; set; }
+        public double Specular { get; set; }
     }
 }

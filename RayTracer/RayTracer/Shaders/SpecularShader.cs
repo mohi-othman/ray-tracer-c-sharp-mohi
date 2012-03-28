@@ -7,22 +7,22 @@ namespace RayTracer.RayTracer.Shaders
 {
     public class SpecularShader:Shader
     {
-        public override Color GetColor(SolidObject HitObject, LightSource Light, Vector3D ViewDirection, Vector3D LightDirection, Vector3D Normal)
+        public override Color GetColor(Primitive HitObject, LightSource Light, Vector3D ViewDirection, Vector3D LightDirection, Vector3D Normal)
         {
-            var c1 = -(LightDirection * Normal);
-            var reflectionDirection = LightDirection + (2 * Normal * c1);
+            var diffusedColor = (new DiffuseShader()).GetColor(HitObject, Light, ViewDirection, LightDirection, Normal);
+            var L = LightDirection.Normalize();
+            var V = ViewDirection.Normalize();
+            var N = Normal.Normalize();
 
-            var dot = ViewDirection * reflectionDirection;
-
-            if (dot > 0)
+            var R = L - 2 * (L * N) * N;
+            var dot = V * R;
+            if (dot > Globals.epsilon)
             {
-                var spec = Math.Pow(dot, .1) * 0.2;
-                return spec * HitObject.Material.Color;
+                var spec = Math.Pow(dot, 20) * Light.Specular;
+                diffusedColor += spec * Light.Color;
             }
-            else
-            {
-                return new Color();
-            }
+            
+            return diffusedColor;
         }
     }
 }

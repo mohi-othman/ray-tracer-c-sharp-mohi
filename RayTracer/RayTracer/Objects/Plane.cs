@@ -5,7 +5,7 @@ using System.Text;
 
 namespace RayTracer.RayTracer.Objects
 {
-    public class Plane : SolidObject
+    public class Plane : Primitive
     {
         public double Distance { get; set; }
         public Vector3D Normal { get; set; }
@@ -13,17 +13,15 @@ namespace RayTracer.RayTracer.Objects
         public override double Intersection(Ray ray)
         {
             var d = Normal * ray.Direction;
-
-            if (d > 0)
+            if (d != 0)
             {
                 var dist = -((Normal * ray.Origin) + Distance) / d;
-                if (dist > 0)
+                if (dist > Globals.epsilon)
                 {
                     return dist;
                 }
             }
             return NoColision;
-
         }
 
         public override Vector3D GetNormal(Vector3D point)

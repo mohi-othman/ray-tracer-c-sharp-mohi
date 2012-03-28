@@ -5,7 +5,7 @@ using System.Text;
 
 namespace RayTracer.RayTracer
 {
-    public abstract class SolidObject
+    public abstract class Primitive
     {
         public const double NoColision = -1;
 

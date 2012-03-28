@@ -17,7 +17,7 @@ namespace RayTracer.RayTracer.Materials
             get { return 0; }
         }
 
-        public override double LambertCoeff
+        public override double DiffuseCoeff
         {
             get { return 1; }
         }

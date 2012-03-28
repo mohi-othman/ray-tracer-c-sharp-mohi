@@ -29,39 +29,38 @@ namespace RayTracer
             InitializeComponent();
 
             //var camera = new OrthographicCamera(1000);
-            var camera = new ConicalCamera(new Vector3D(320, 240, -700));
+            var camera = new ConicalCamera(new Vector3D(0, 0, -5));
 
-            var sphere = new Sphere(new Vector3D(150, 290, 0), 50);
-            sphere.Material = new RayTracer.Materials.LambertianMaterial(new RayTracer.Color(.9, .4, 0));
-            //sphere.Material = new RayTracer.Materials.CustomMaterial(new RayTracer.Color(.9, .4, 0), 1, 0, 1);
+            var plane = new Plane(4.4, new Vector3D(0, 1, 0));
+            plane.Material = new RayTracer.Materials.CustomMaterial(new RayTracer.Color(.4, .3, .3), 0, 0, 1);
 
+            var sphere1 = new Sphere(new Vector3D(1, -0.8, 3), 2.5);
+            sphere1.Material = new RayTracer.Materials.CustomMaterial(new RayTracer.Color(.7, .7, .7), 0.6, 0, 0.2);
 
-            var sphere2 = new Sphere(new Vector3D(353, 290, 700), 200);
-            //sphere2.Material = new RayTracer.Materials.LambertianMaterial(new RayTracer.Color(0, .95, .4));
-            sphere2.Material = new RayTracer.Materials.CustomMaterial(new RayTracer.Color(0, .95, .4), .5, 0, 1);
-
-            var plane = new Plane(200, new Vector3D(0, 0, -1));
-            plane.Material = new RayTracer.Materials.CustomMaterial(new RayTracer.Color(0, .8, .2), 0, 0, 1);
-
-            var listObj = new List<SolidObject>();
-            listObj.Add(sphere);
+            var sphere2 = new Sphere(new Vector3D(-5.5, -0.5, 7), 2);
+            sphere2.Material = new RayTracer.Materials.CustomMaterial(new RayTracer.Color(.7, .7, 1), 1, 0, 0.1);
+                        
+            var listObj = new List<Primitive>();
+            listObj.Add(sphere1);
             listObj.Add(sphere2);
             listObj.Add(plane);
 
             var light1 = new RayTracer.Lights.PointLight();
-            light1.Location = new Vector3D(10, 240, -700);
-            light1.Color = new RayTracer.Color(1, 1, 1);
+            light1.Location = new Vector3D(0, 5, 5);
+            light1.Color = new RayTracer.Color(.6, .6, .6);
+            light1.Specular = .8;
 
             var light2 = new RayTracer.Lights.PointLight();
-            light2.Location = new Vector3D(220, 100, 500);
-            light2.Color = new RayTracer.Color(.2, .2, .2);
+            light2.Location = new Vector3D(2, 5, 1);
+            light2.Color = new RayTracer.Color(.7, .7, .9);
+            light2.Specular = .8;
 
             var listLight = new List<LightSource>();
             listLight.Add(light1);
-            //listLight.Add(light2);
+            listLight.Add(light2);
 
-            var ambientLight = new RayTracer.Color(.1, .1, .1);
-            var scene = new RayTracer.Scene(640, 480, camera, ambientLight, listObj, listLight, new RayTracer.Shaders.DiffuseShader());
+            var ambientLight = new RayTracer.Color(.16, .16, .16);
+            var scene = new RayTracer.Scene(800, 600, camera, ambientLight, listObj, listLight, new RayTracer.Shaders.SpecularShader());
             var picArray = scene.Render();
             //var picture = picArray.ExportDepthImage();
             var picture = picArray.ExportImage();

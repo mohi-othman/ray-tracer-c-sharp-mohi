@@ -19,7 +19,7 @@ namespace RayTracer.RayTracer.Materials
             get { return _RefractionCoeff; }
         }
 
-        public override double LambertCoeff
+        public override double DiffuseCoeff
         {
             get { return _LambertCoeff; }
         }

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace RayTracer.RayTracer.Objects
 {
-    class Sphere : SolidObject
+    class Sphere : Primitive
     {
         public double Radius { get; set; }
 
