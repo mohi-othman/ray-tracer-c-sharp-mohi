@@ -9,6 +9,6 @@ namespace RayTracer.RayTracer
     {
         public abstract Ray GenerateRay(Vector3D target);
 
-        public abstract View GetView(int width, int height);
+        public abstract View GetView(int width, int height, double PixelSize);
     }
 }

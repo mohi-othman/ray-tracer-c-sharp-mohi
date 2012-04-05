@@ -87,6 +87,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="RayTracer\Cameras\PersopectiveCamera.cs" />
     <Compile Include="RayTracer\Cameras\SimplePerspectiveCamera.cs" />
     <Compile Include="RayTracer\Lights\PointLight.cs" />
     <Compile Include="RayTracer\Materials\BaseMaterial.cs" />

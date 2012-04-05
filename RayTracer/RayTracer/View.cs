@@ -11,7 +11,7 @@ namespace RayTracer.RayTracer
         public Point[,] Pixels { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
-
+        
         //Constructor
         public View(int width, int height, Vector3D topLeftCorner, Vector3D topRightCorner, Vector3D bottomLeftCorner, Vector3D bottomRightCorner)
         {
@@ -77,7 +77,7 @@ namespace RayTracer.RayTracer
                 }
             }
 
-            var maxDepth = depthList.Max();
+            var maxDepth = 140;
             var minDepth = depthList.Min();
 
             for (int x = 0; x < this.Width; x++)
@@ -89,6 +89,8 @@ namespace RayTracer.RayTracer
                     {
                         var c = (int)Math.Ceiling((maxDepth - d) / (maxDepth - minDepth) * 220) + 30;
 
+                        if (c < 0)
+                            c = 0;
                         picture.SetPixel(x, y, System.Drawing.Color.FromArgb(c, c, c));
                     }
                     else

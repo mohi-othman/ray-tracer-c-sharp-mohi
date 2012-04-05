@@ -17,6 +17,7 @@ namespace RayTracer.RayTracer.Materials
         public Double Exponent { get; set; }
         public Color TransparentColor { get; set; }
         public Color ReflectiveColor { get; set; }
+        public double RefractionCoeff { get; set; }
         public double RefractionIndex { get; set; }
     }
 }

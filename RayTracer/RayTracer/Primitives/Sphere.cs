@@ -15,8 +15,8 @@ namespace RayTracer.RayTracer.Objects
             Radius = size;
         }
 
-        public override double Intersection(Ray ray)        {           
-
+        public override Collision Intersection(Ray ray)
+        {
             var A = ray.Direction * ray.Direction;
             var B = 2 * (ray.Origin - this.Location) * ray.Direction;
             var C = (ray.Origin - this.Location) * (ray.Origin - this.Location) - Radius * Radius;
@@ -24,7 +24,7 @@ namespace RayTracer.RayTracer.Objects
             var disc = B * B - 4 * A * C;
 
             if (disc < 0)
-                return NoColision;
+                return new Collision();
 
             var distSqrt = Math.Sqrt(disc);
             double q;
@@ -44,12 +44,18 @@ namespace RayTracer.RayTracer.Objects
             }
 
             if (t1 < Globals.epsilon)
-                return NoColision;
+                return new Collision();
 
             if (t0 < Globals.epsilon)
-                return t1;
+            {
+                var hitPoint0 = ray.Origin + (ray.Direction * t1);
+                return new Collision(true, true, hitPoint0, this, GetNormal(hitPoint0), t1);
+            }
 
-            return t0;
+            var hitPoint1 = ray.Origin + (ray.Direction * t0);
+            return new Collision(true, false, hitPoint1, this, GetNormal(hitPoint1), t0);
+
+            
         }
 
 

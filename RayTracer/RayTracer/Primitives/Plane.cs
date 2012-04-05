@@ -10,7 +10,7 @@ namespace RayTracer.RayTracer.Objects
         public double Distance { get; set; }
         public Vector3D Normal { get; set; }
 
-        public override double Intersection(Ray ray)
+        public override Collision Intersection(Ray ray)
         {
             var d = Normal * ray.Direction;
             if (d != 0)
@@ -18,10 +18,11 @@ namespace RayTracer.RayTracer.Objects
                 var dist = -((Normal * ray.Origin) + Distance) / d;
                 if (dist > Globals.epsilon)
                 {
-                    return dist;
+                    var hitPoint = ray.Origin + (dist * ray.Direction);
+                    return new Collision(true, false, hitPoint, this, Normal, dist);
                 }
             }
-            return NoColision;
+            return new Collision();
         }
 
         public override Vector3D GetNormal(Vector3D point)

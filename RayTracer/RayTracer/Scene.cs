@@ -9,6 +9,7 @@ namespace RayTracer.RayTracer
     {
         public int SizeX { get; set; }
         public int SizeY { get; set; }
+        public double PixelSize { get; set; }
         public Color AmbientLight { get; set; }
         public Camera SceneCamera { get; set; }
         public List<Primitive> SceneObjects { get; set; }
@@ -17,7 +18,7 @@ namespace RayTracer.RayTracer
         public Shaders.Shader SceneShader { get; set; }
         public Color BackgroundColor { get; set; }
 
-        public Scene(int sizeX, int sizeY, Camera sceneCamera, Color ambientLight, List<Primitive> sceneObjects, List<LightSource> sceneLights, Shaders.Shader sceneShader, Color backgroundColor)
+        public Scene(int sizeX, int sizeY, double pixelSize, Camera sceneCamera, Color ambientLight, List<Primitive> sceneObjects, List<LightSource> sceneLights, Shaders.Shader sceneShader, Color backgroundColor)
         {
             SizeX = sizeX;
             SizeY = sizeY;
@@ -27,11 +28,12 @@ namespace RayTracer.RayTracer
             AmbientLight = ambientLight;
             SceneShader = sceneShader;
             BackgroundColor = backgroundColor;
+            PixelSize = pixelSize;
         }
 
         public View Render()
         {
-            var result = SceneCamera.GetView(SizeX, SizeY);
+            var result = SceneCamera.GetView(SizeX, SizeY, PixelSize);
             var level = 0;
 
             for (int x = 0; x < SizeX; x++)
@@ -59,7 +61,7 @@ namespace RayTracer.RayTracer
             if (collision.IsCollision)
             {
                 //Lighting
-                var normal = collision.GetNormal();
+                var normal = collision.Normal;
 
                 var newColor = new Color();
 
@@ -98,21 +100,25 @@ namespace RayTracer.RayTracer
                 }
 
                 //Refraction
-                if (collision.HitObject.Material.RefractionIndex > 0 && level <= Globals.maxDepth)
+                if (collision.HitObject.Material.RefractionCoeff > 0 && level <= Globals.maxDepth)
                 {
                     var n = refractionIndex / collision.HitObject.Material.RefractionIndex;
-                    var cosI = -(normal * ray.Direction);
+                    var N = normal * (collision.IsInsidePrimitive ? -1 : 1);
+
+                    var cosI = -(N * ray.Direction);
                     var cosT2 = 1 - n * n * (1 - cosI * cosI);
                     if (cosT2 > 0)
                     {
-                        var refractionDirection = (n * ray.Direction) + (n * cosI - Math.Sqrt(cosT2)) * normal;
+                        var refractionDirection = (n * ray.Direction) + (n * cosI - Math.Sqrt(cosT2)) * N;
                         var refractionRay = new Ray(collision.HitPoint + refractionDirection * Globals.epsilon, refractionDirection);
-                        var refractionPoint = RayTrace(refractionRay, collision.HitObject.Material.RefractionIndex, level+1);
+                        var refractionPoint = RayTrace(refractionRay, collision.HitObject.Material.RefractionIndex, level + 1);
                         var absorbance = collision.HitObject.Material.DiffuseColor * .15 * -refractionPoint.depth;
                         var transparency = new Color(Math.Exp(absorbance.R), Math.Exp(absorbance.G), Math.Exp(absorbance.B));
                         newColor += refractionPoint.color * transparency;
                     }
                 }
+
+                newColor += AmbientLight;
 
                 return new View.Point { color = newColor, depth = collision.Distance };
             }
@@ -123,25 +129,23 @@ namespace RayTracer.RayTracer
         public Collision Trace(Ray ray)
         {
             var minT = Globals.infinity;
-            Primitive hitObject = null;
+            Collision hit = null;
 
             foreach (Primitive obj in SceneObjects)
             {
-                var t = obj.Intersection(ray);
-                if (t != Primitive.NoColision && t < minT)
+                var c = obj.Intersection(ray);
+                if (c.IsCollision && c.Distance < minT)
                 {
-                    minT = t;
-                    hitObject = obj;
+                    minT = c.Distance;
+                    hit = c;
                 }
             }
 
-            if (hitObject == null)
-                return new Collision(false, null, null, 0);
+            if (hit == null)
+                return new Collision(false, false, null, null, null, 0);
             else
             {
-                var hitPoint = ray.Origin + minT * ray.Direction;
-                var distance = Vector3D.Distance(hitPoint, ray.Origin);
-                return new Collision(true, hitPoint, hitObject, distance);
+                return hit;
             }
 
         }

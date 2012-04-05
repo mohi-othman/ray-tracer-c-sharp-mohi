@@ -7,10 +7,10 @@ namespace RayTracer.RayTracer.Materials
 {
     public class CustomMaterial : BaseMaterial
     {
-        double _AmbientCoeff;
-        double _ReflectionCoeff;
-        double _DiffuseCoeff;
-        double _SpecularCoeff;
+        double _AmbientCoeff = 0;
+        double _ReflectionCoeff = 0;
+        double _DiffuseCoeff = 0;
+        double _SpecularCoeff = 0;
 
         public override double AmbientCoeff
         {
@@ -38,6 +38,9 @@ namespace RayTracer.RayTracer.Materials
             _ReflectionCoeff = reflectionCoeff;
             _DiffuseCoeff = diffuseCoeff;
             _SpecularCoeff = specularCoeff;
+            TransparentColor = new Color();
+            SpecularColor = new Color();
+            ReflectiveColor = new Color();
         }
     }
 }

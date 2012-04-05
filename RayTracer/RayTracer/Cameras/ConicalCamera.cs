@@ -5,7 +5,7 @@ using System.Text;
 
 namespace RayTracer.RayTracer.Cameras
 {
-    class ConicalCamera:Camera
+    class ConicalCamera : Camera
     {
         public Vector3D CameraLocation { get; set; }
 
@@ -19,11 +19,14 @@ namespace RayTracer.RayTracer.Cameras
             return new Ray(CameraLocation, direction);
         }
 
-        public override View GetView(int width, int height)
+        public override View GetView(int width, int height, double PixelSize)
         {
-            var halfX = Globals.worldWidth/2;
-            var halfY = Globals.worldHeight/2;
-            return new View(width, height, new Vector3D(-halfX,halfY,0),new Vector3D(halfX,halfY,0),new Vector3D(-halfX,-halfY,0),new Vector3D(halfX,-halfY,0));
+            var halfX = 8 / 2;
+            var halfY = 6 / 2;
+            return new View(width, height, new Vector3D(-halfX, halfY, 0), new Vector3D(halfX, halfY, 0), new Vector3D(-halfX, -halfY, 0), new Vector3D(halfX, -halfY, 0));
         }
+
+        
+        
     }
 }

@@ -5,20 +5,21 @@ using System.Text;
 
 namespace RayTracer.RayTracer.Cameras
 {
-    public class SimplePerspectiveCamera : Camera
+    public class PerspectiveCamera:Camera
     {
         public Vector3D CameraLocation { get; set; }
         public Vector3D Direction { get; set; }
         public Vector3D Up { get; set; }
-        public double Distance { get; set; }
+        public double Angle { get; set; }
 
-        public SimplePerspectiveCamera(Vector3D cameraLocation, Vector3D direction, Vector3D up, double distance)
+        public PerspectiveCamera(Vector3D cameraLocation, Vector3D direction, Vector3D up, double angle)
         {
             CameraLocation = cameraLocation;
             Direction = direction;
             Up = up;
-            Distance = distance;
+            Angle = angle;
         }
+
         public override Ray GenerateRay(Vector3D target)
         {
             var direction = target - CameraLocation;
@@ -37,10 +38,10 @@ namespace RayTracer.RayTracer.Cameras
 
         private Vector3D TranslatePoint(int x, int y, int width, int height, double pixelSize)
         {
+            var Distance = width / (2 * Math.Tan(Angle)) * pixelSize;
             return (CameraLocation + (Direction * Distance)) +
-                        ((Vector3D.Cross(Up, Direction) * (x + (-0.5 * width)) * pixelSize)) -
-                    (Up * ((y + (-0.5 * height)) * pixelSize));
-
+                       ((Vector3D.Cross(Up, Direction) * (x + (-0.5 * width)) * pixelSize)) -
+                   (Up * ((y + (-0.5 * height)) * pixelSize));
         }
     }
 }
