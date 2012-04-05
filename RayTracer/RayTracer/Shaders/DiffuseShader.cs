@@ -7,7 +7,7 @@ namespace RayTracer.RayTracer.Shaders
 {
     public class DiffuseShader : Shader
     {
-        public override Color GetColor(Primitive HitObject, LightSource Light, Vector3D ViewDirection, Vector3D LightDirection, Vector3D Normal)
+        public override Color GetColor(Primitive HitObject, LightSource Light, Vector3D ViewDirection, Vector3D LightDirection, Vector3D Normal, Color AmbientColor)
         {
             var L = LightDirection;
             if (HitObject.Material.DiffuseCoeff > 0)
@@ -16,7 +16,7 @@ namespace RayTracer.RayTracer.Shaders
                 if (dot > Globals.epsilon)
                 {
                     var diff = dot * HitObject.Material.DiffuseCoeff;
-                    return diff * HitObject.Material.Color * Light.Color;
+                    return diff * HitObject.Material.DiffuseColor * Light.Color;
                 }
             }
             return new Color();
@@ -32,7 +32,7 @@ namespace RayTracer.RayTracer.Shaders
             //}
         }
 
-        
+
 
     }
 }

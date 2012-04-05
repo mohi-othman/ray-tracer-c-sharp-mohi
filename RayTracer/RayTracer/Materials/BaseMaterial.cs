@@ -6,11 +6,17 @@ using System.Text;
 namespace RayTracer.RayTracer.Materials
 {
     public abstract class BaseMaterial
-    {        
+    {
+        public abstract double AmbientCoeff { get; }
         public abstract double ReflectionCoeff { get; }
-        public abstract double RefractionCoeff { get; }
         public abstract double DiffuseCoeff { get; }
+        public abstract double SpecularCoeff { get; }
 
-        public Color Color { get; set; }
+        public Color DiffuseColor { get; set; }
+        public Color SpecularColor { get; set; }
+        public Double Exponent { get; set; }
+        public Color TransparentColor { get; set; }
+        public Color ReflectiveColor { get; set; }
+        public double RefractionIndex { get; set; }
     }
 }

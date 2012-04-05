@@ -32,38 +32,80 @@ namespace RayTracer
             var camera = new ConicalCamera(new Vector3D(0, 0, -5));
 
             var plane = new Plane(4.4, new Vector3D(0, 1, 0));
-            plane.Material = new RayTracer.Materials.CustomMaterial(new RayTracer.Color(.4, .3, .3), 0, 0, 1);
+            plane.Material = new RayTracer.Materials.PhongMaterial(new RayTracer.Color(.4, .3, .3),
+                                                                    new RayTracer.Color(1, 1, 1),
+                                                                    20,
+                                                                    new RayTracer.Color(.1, 0, 0),
+                                                                    new RayTracer.Color(.1, 0, 0),
+                                                                    0);
+
 
             var sphere1 = new Sphere(new Vector3D(1, -0.8, 3), 2.5);
-            sphere1.Material = new RayTracer.Materials.CustomMaterial(new RayTracer.Color(.7, .7, .7), 0.6, 0, 0.2);
+            sphere1.Material = new RayTracer.Materials.PhongMaterial(new RayTracer.Color(.7, .7, .7),
+                                                                    new RayTracer.Color(1, 1, 1),
+                                                                    20,
+                                                                    new RayTracer.Color(.1, 0, 0),
+                                                                    new RayTracer.Color(.1, 0, 0),
+                                                                    .5);
 
             var sphere2 = new Sphere(new Vector3D(-5.5, -0.5, 7), 2);
-            sphere2.Material = new RayTracer.Materials.CustomMaterial(new RayTracer.Color(.7, .7, 1), 1, 0, 0.1);
-                        
+            sphere2.Material = new RayTracer.Materials.PhongMaterial(new RayTracer.Color(.7, .7, 1),
+                                                                    new RayTracer.Color(1, 1, 1),
+                                                                    20,
+                                                                    new RayTracer.Color(.1, .1, 0),
+                                                                    new RayTracer.Color(.1, .1, 0),
+                                                                    0);
+
+            var triangle = new Triangle(new Vector3D(-11, 12, 18),
+                                        new Vector3D(3, 12, 22),                                        
+                                        new Vector3D(-4, -2, 18));
+            triangle.Material = new RayTracer.Materials.PhongMaterial(new RayTracer.Color(.7, .3, .3),
+                                                                    new RayTracer.Color(1, 1, 1),
+                                                                    20,
+                                                                    new RayTracer.Color(.1, 0, 0),
+                                                                    new RayTracer.Color(.1, 0, 0),
+                                                                    0);
+
             var listObj = new List<Primitive>();
             listObj.Add(sphere1);
             listObj.Add(sphere2);
             listObj.Add(plane);
+            listObj.Add(triangle);
 
             var light1 = new RayTracer.Lights.PointLight();
             light1.Location = new Vector3D(0, 5, 5);
             light1.Color = new RayTracer.Color(.6, .6, .6);
-            light1.Specular = .8;
+            
 
             var light2 = new RayTracer.Lights.PointLight();
             light2.Location = new Vector3D(2, 5, 1);
             light2.Color = new RayTracer.Color(.7, .7, .9);
-            light2.Specular = .8;
+            
 
             var listLight = new List<LightSource>();
             listLight.Add(light1);
             listLight.Add(light2);
 
             var ambientLight = new RayTracer.Color(.16, .16, .16);
-            var scene = new RayTracer.Scene(800, 600, camera, ambientLight, listObj, listLight, new RayTracer.Shaders.SpecularShader());
-            var picArray = scene.Render();
-            //var picture = picArray.ExportDepthImage();
-            var picture = picArray.ExportImage();
+            var scene = new RayTracer.Scene(800, 600, camera, ambientLight, listObj, listLight, new RayTracer.Shaders.PhongShader(), new RayTracer.Color(0, 0, 0));
+            View pic;
+            Bitmap picture = null;
+            string error = "";
+            try
+            {
+                pic = scene.Render();
+                picture = pic.ExportImage();
+            }
+            catch (Exception e)
+            {
+                error = e.Message;
+            }
+
+            if (error != "")
+            {
+                MessageBox.Show(error);
+                return;
+            }
 
             MemoryStream ms = new MemoryStream();
             picture.Save(ms, System.Drawing.Imaging.ImageFormat.Png);

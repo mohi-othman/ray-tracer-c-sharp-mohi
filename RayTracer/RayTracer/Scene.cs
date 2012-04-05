@@ -15,11 +15,9 @@ namespace RayTracer.RayTracer
         public List<LightSource> SceneLights { get; set; }
         public Vector3D TopLeftOrigin { get; set; }
         public Shaders.Shader SceneShader { get; set; }
+        public Color BackgroundColor { get; set; }
 
-        const double worldHeight = 6.0;
-        const double worldWidth = 8.0;
-
-        public Scene(int sizeX, int sizeY, Camera sceneCamera, Color ambientLight, List<Primitive> sceneObjects, List<LightSource> sceneLights, Shaders.Shader sceneShader)
+        public Scene(int sizeX, int sizeY, Camera sceneCamera, Color ambientLight, List<Primitive> sceneObjects, List<LightSource> sceneLights, Shaders.Shader sceneShader, Color backgroundColor)
         {
             SizeX = sizeX;
             SizeY = sizeY;
@@ -28,28 +26,23 @@ namespace RayTracer.RayTracer
             SceneLights = sceneLights;
             AmbientLight = ambientLight;
             SceneShader = sceneShader;
+            BackgroundColor = backgroundColor;
         }
 
         public View Render()
         {
-            var result = new View(SizeX, SizeY);
+            var result = SceneCamera.GetView(SizeX, SizeY);
             var level = 0;
 
-            var xd = worldWidth / SizeX;
-            var yd = worldHeight / SizeY;
-
-            for (double x = 0; x < SizeX; x++)
+            for (int x = 0; x < SizeX; x++)
             {
-                for (double y = 0; y < SizeY; y++)
+                for (int y = 0; y < SizeY; y++)
                 {
-                    var wx = x * xd - worldWidth / 2;
-                    var wy = worldHeight / 2 - y * yd;
-
-                    var targetPixel = new Vector3D(wx, wy, 0);
+                    var targetPixel = result.Pixels[x, y].realCoordinate;
 
                     var ray = SceneCamera.GenerateRay(targetPixel);
 
-                    var point = RayTrace(ray, level);
+                    var point = RayTrace(ray, 1, level);
 
                     result.Pixels[(int)x, (int)y] = point;
 
@@ -59,7 +52,7 @@ namespace RayTracer.RayTracer
             return result;
         }
 
-        public View.Point RayTrace(Ray ray, int level)
+        public View.Point RayTrace(Ray ray, double refractionIndex, int level)
         {
             var collision = Trace(ray);
 
@@ -72,6 +65,7 @@ namespace RayTracer.RayTracer
 
                 foreach (LightSource light in SceneLights)
                 {
+
                     var dist = light.Location - collision.HitPoint;
                     if (normal * dist <= 0)
                         continue; //light source is behind 
@@ -79,7 +73,7 @@ namespace RayTracer.RayTracer
                     var t = Math.Sqrt(dist * dist);
                     if (t < 0)
                         continue; //Avoid division by zero
-                    var lightDir = (1 / t) * dist;
+                    var lightDir = ((1 / t) * dist).Normalize();
                     var lightRay = new Ray(collision.HitPoint + lightDir * Globals.epsilon, lightDir);
 
                     //Check if object in shadows
@@ -87,33 +81,43 @@ namespace RayTracer.RayTracer
 
                     if (!shadowCollision.IsCollision)
                     {
-                        newColor += SceneShader.GetColor(collision.HitObject, light, ray.Direction, lightRay.Direction, normal);
+                        newColor += SceneShader.GetColor(collision.HitObject, light, ray.Direction, lightRay.Direction, normal, AmbientLight);
                     }
                 }
 
                 //Reflection
                 if (collision.HitObject.Material.ReflectionCoeff > 0 && level <= Globals.maxDepth)
                 {
-                    var reflectionDirection = ray.Direction - (2 * (ray.Direction * normal) * normal);
+                    var reflectionDirection = (ray.Direction - (2 * (ray.Direction * normal) * normal)).Normalize();
                     var reflectionRay = new Ray(collision.HitPoint + reflectionDirection * Globals.epsilon, reflectionDirection);
 
-                    var newPoint = RayTrace(reflectionRay, level + 1);
+                    var newPoint = RayTrace(reflectionRay, refractionIndex, level + 1);
 
                     //newColor += newPoint.color * collision.HitObject.Material.ReflectionCoeff * collision.HitObject.Material.Color;
-                    newColor += newPoint.color * collision.HitObject.Material.ReflectionCoeff * collision.HitObject.Material.Color;
+                    newColor += newPoint.color * collision.HitObject.Material.ReflectionCoeff * collision.HitObject.Material.DiffuseColor;
                 }
 
                 //Refraction
-                if (collision.HitObject.Material.RefractionCoeff > 0 && level <= Globals.maxDepth)
+                if (collision.HitObject.Material.RefractionIndex > 0 && level <= Globals.maxDepth)
                 {
+                    var n = refractionIndex / collision.HitObject.Material.RefractionIndex;
+                    var cosI = -(normal * ray.Direction);
+                    var cosT2 = 1 - n * n * (1 - cosI * cosI);
+                    if (cosT2 > 0)
+                    {
+                        var refractionDirection = (n * ray.Direction) + (n * cosI - Math.Sqrt(cosT2)) * normal;
+                        var refractionRay = new Ray(collision.HitPoint + refractionDirection * Globals.epsilon, refractionDirection);
+                        var refractionPoint = RayTrace(refractionRay, collision.HitObject.Material.RefractionIndex, level+1);
+                        var absorbance = collision.HitObject.Material.DiffuseColor * .15 * -refractionPoint.depth;
+                        var transparency = new Color(Math.Exp(absorbance.R), Math.Exp(absorbance.G), Math.Exp(absorbance.B));
+                        newColor += refractionPoint.color * transparency;
+                    }
                 }
-
-                newColor += AmbientLight;
 
                 return new View.Point { color = newColor, depth = collision.Distance };
             }
             else
-                return new View.Point { color = new Color(), depth = Globals.infinity };
+                return new View.Point { color = BackgroundColor, depth = Globals.infinity };
         }
 
         public Collision Trace(Ray ray)

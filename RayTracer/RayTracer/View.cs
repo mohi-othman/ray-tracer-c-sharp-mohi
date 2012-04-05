@@ -9,30 +9,52 @@ namespace RayTracer.RayTracer
     public class View
     {
         public Point[,] Pixels { get; set; }
-        public int width { get; set; }
-        public int height { get; set; }
+        public int Width { get; set; }
+        public int Height { get; set; }
 
-        public View(int x, int y)
+        //Constructor
+        public View(int width, int height, Vector3D topLeftCorner, Vector3D topRightCorner, Vector3D bottomLeftCorner, Vector3D bottomRightCorner)
         {
-            width = x;
-            height = y;
-            Pixels = new Point[x, y];
+            Width = width;
+            Height = height;
+
+            var distanceX = Vector3D.Distance(topRightCorner, topLeftCorner);
+            var distanceY = Vector3D.Distance(bottomLeftCorner, topLeftCorner);
+            var deltaX = distanceX / width;
+            var deltaY = distanceY / height;
+            var vectorX = (topRightCorner - topLeftCorner).Normalize();
+            var vectorY = (bottomLeftCorner - topLeftCorner).Normalize();
+            
+            Pixels = new Point[width, height];
+
+            for (int x = 0; x < width; x++)
+            {                
+                for (int y = 0; y < height; y++)
+                {                
+                    var _realCoordinate = new Vector3D(topLeftCorner.x, topLeftCorner.y, topLeftCorner.z);
+                    _realCoordinate += vectorX * (deltaX * x);
+                    _realCoordinate += vectorY * (deltaY * y);
+                    Pixels[x,y] = new Point{ color = new Color(), depth=Globals.infinity, realCoordinate =_realCoordinate};                         
+                }
+                
+            }
         }
 
         public struct Point
         {
             public Color color;
             public double depth;
+            public Vector3D realCoordinate;
         }
 
         public System.Drawing.Bitmap ExportImage()
         {
-            var picture = new System.Drawing.Bitmap(this.width, this.height);
+            var picture = new System.Drawing.Bitmap(this.Width, this.Height);
 
-            for (int x = 0; x < this.width; x++)
+            for (int x = 0; x < this.Width; x++)
             {
-                for (int y = 0; y < this.height; y++)
-                {                    
+                for (int y = 0; y < this.Height; y++)
+                {
                     picture.SetPixel(x, y, Pixels[x, y].color.Convert());
                 }
             }
@@ -42,12 +64,12 @@ namespace RayTracer.RayTracer
 
         public System.Drawing.Bitmap ExportDepthImage()
         {
-            var picture = new System.Drawing.Bitmap(this.width, this.height);
+            var picture = new System.Drawing.Bitmap(this.Width, this.Height);
             var depthList = new List<double>();
 
-            for (int x = 0; x < this.width; x++)
+            for (int x = 0; x < this.Width; x++)
             {
-                for (int y = 0; y < this.height; y++)
+                for (int y = 0; y < this.Height; y++)
                 {
                     var d = Pixels[x, y].depth;
                     if (d < Globals.infinity)
@@ -58,9 +80,9 @@ namespace RayTracer.RayTracer
             var maxDepth = depthList.Max();
             var minDepth = depthList.Min();
 
-            for (int x = 0; x < this.width; x++)
+            for (int x = 0; x < this.Width; x++)
             {
-                for (int y = 0; y < this.height; y++)
+                for (int y = 0; y < this.Height; y++)
                 {
                     var d = Pixels[x, y].depth;
                     if (d < Globals.infinity)

@@ -12,7 +12,7 @@ namespace RayTracer.RayTracer
         public double z { get; set; }
 
         public Vector3D(double X, double Y, double Z)
-        {            
+        {
             x = X;
             y = Y;
             z = Z;
@@ -32,7 +32,7 @@ namespace RayTracer.RayTracer
             return new Vector3D(xd, yd, zd);
         }
 
-        public static Vector3D operator *( Vector3D vector, double scalar)
+        public static Vector3D operator *(Vector3D vector, double scalar)
         {
             return scalar * vector;
         }
@@ -64,6 +64,14 @@ namespace RayTracer.RayTracer
             return Math.Sqrt(xd * xd + yd * yd + zd * zd);
         }
 
+        public static Vector3D Cross(Vector3D a, Vector3D b)
+        {
+            var x = a.y * b.z - b.y * a.z;
+            var y = a.z * b.x - b.z * a.x;
+            var z = a.x * b.y - b.x * a.y;
+            return new Vector3D(x, y, z);
+        }
+
         public Vector3D Inverse()
         {
             return new Vector3D(-x, -y, -z);
@@ -77,12 +85,17 @@ namespace RayTracer.RayTracer
         public Vector3D Normalize()
         {
             var a = this.Magnitude();
-            return new Vector3D(x / a, y / a, z / a);
+            if (a == 0)
+                return this;
+            else
+                return new Vector3D(x / a, y / a, z / a);
         }
-        public Vector3D Multiply(Vector3D other)
+
+        public double Distance()
         {
-            return new Vector3D(this.y * other.z - this.z * other.y, this.z * other.x - this.x * other.z, this.x * other.y - this.y * other.x);
+            return Math.Sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
         }
+
 
 
     }

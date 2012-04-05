@@ -5,7 +5,11 @@ using System.Text;
 
 namespace RayTracer.RayTracer.Lights
 {
-    class PointLight:LightSource
+    public class PointLight:LightSource
     {
+        public PointLight()
+        {
+            Attenuation = new Vector3D(0.5, 0.5, 0.5);
+        }
     }
 }

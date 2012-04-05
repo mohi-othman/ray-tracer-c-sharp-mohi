@@ -18,5 +18,12 @@ namespace RayTracer.RayTracer.Cameras
             var direction = target - CameraLocation;
             return new Ray(CameraLocation, direction);
         }
+
+        public override View GetView(int width, int height)
+        {
+            var halfX = Globals.worldWidth/2;
+            var halfY = Globals.worldHeight/2;
+            return new View(width, height, new Vector3D(-halfX,halfY,0),new Vector3D(halfX,halfY,0),new Vector3D(-halfX,-halfY,0),new Vector3D(halfX,-halfY,0));
+        }
     }
 }

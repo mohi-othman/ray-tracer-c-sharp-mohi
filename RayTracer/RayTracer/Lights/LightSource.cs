@@ -11,6 +11,6 @@ namespace RayTracer.RayTracer
 
         public Color Color { get; set; }
 
-        public double Specular { get; set; }
+        public Vector3D Attenuation { get; set; }
     }
 }

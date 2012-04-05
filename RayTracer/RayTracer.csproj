@@ -87,13 +87,16 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="RayTracer\Cameras\SimplePerspectiveCamera.cs" />
     <Compile Include="RayTracer\Lights\PointLight.cs" />
     <Compile Include="RayTracer\Materials\BaseMaterial.cs" />
     <Compile Include="RayTracer\Materials\CustomMaterial.cs" />
-    <Compile Include="RayTracer\Materials\LambertianMaterial.cs" />
-    <Compile Include="RayTracer\Objects\Plane.cs" />
-    <Compile Include="RayTracer\Objects\Rectangle.cs" />
+    <Compile Include="RayTracer\Materials\PhongMaterial.cs" />
+    <Compile Include="RayTracer\Primitives\Plane.cs" />
+    <Compile Include="RayTracer\Primitives\Triangle.cs" />
     <Compile Include="RayTracer\Shaders\DiffuseShader.cs" />
+    <Compile Include="RayTracer\Shaders\PhongIllumination.cs" />
+    <Compile Include="RayTracer\Shaders\PhongShader.cs" />
     <Compile Include="RayTracer\Shaders\Shader.cs" />
     <Compile Include="RayTracer\Shaders\SpecularShader.cs" />
     <Compile Include="Window1.xaml.cs">
@@ -122,8 +125,8 @@
     <Compile Include="RayTracer\Color.cs" />
     <Compile Include="RayTracer\Globals.cs" />
     <Compile Include="RayTracer\Lights\LightSource.cs" />
-    <Compile Include="RayTracer\Objects\SolidObject.cs" />
-    <Compile Include="RayTracer\Objects\Sphere.cs" />
+    <Compile Include="RayTracer\Primitives\SolidObject.cs" />
+    <Compile Include="RayTracer\Primitives\Sphere.cs" />
     <Compile Include="RayTracer\View.cs" />
     <Compile Include="RayTracer\Ray.cs" />
     <Compile Include="RayTracer\Scene.cs" />

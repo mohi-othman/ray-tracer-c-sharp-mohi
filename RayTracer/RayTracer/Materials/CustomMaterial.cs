@@ -5,31 +5,39 @@ using System.Text;
 
 namespace RayTracer.RayTracer.Materials
 {
-    public class CustomMaterial : Materials.BaseMaterial
+    public class CustomMaterial : BaseMaterial
     {
-        private double _ReflectionCoeff, _RefractionCoeff, _LambertCoeff;
+        double _AmbientCoeff;
+        double _ReflectionCoeff;
+        double _DiffuseCoeff;
+        double _SpecularCoeff;
+
+        public override double AmbientCoeff
+        {
+            get { return _AmbientCoeff; }
+        }
 
         public override double ReflectionCoeff
         {
             get { return _ReflectionCoeff; }
         }
 
-        public override double RefractionCoeff
-        {
-            get { return _RefractionCoeff; }
-        }
-
         public override double DiffuseCoeff
         {
-            get { return _LambertCoeff; }
+            get { return _DiffuseCoeff; }
         }
 
-        public CustomMaterial( Color color, double reflectionCoeff, double refractionCoeff, double lambertCoeff)
+        public override double SpecularCoeff
         {
+            get { return _SpecularCoeff; }
+        }
+
+        public CustomMaterial(double ambientCoeff, double reflectionCoeff, double diffuseCoeff, double specularCoeff)
+        {
+            _AmbientCoeff = ambientCoeff;
             _ReflectionCoeff = reflectionCoeff;
-            _RefractionCoeff = refractionCoeff;
-            _LambertCoeff = lambertCoeff;
-            Color = color;
+            _DiffuseCoeff = diffuseCoeff;
+            _SpecularCoeff = specularCoeff;
         }
     }
 }
