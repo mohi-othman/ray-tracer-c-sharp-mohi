@@ -43,9 +43,8 @@ namespace RayTracer.RayTracer
                     var targetPixel = result.Pixels[x, y].realCoordinate;
 
                     var ray = SceneCamera.GenerateRay(targetPixel);
-
-                    var c = new Color();
-                    var point = RayTrace(ray, 1, level, c);
+                                        
+                    var point = RayTrace(ray, 1, level);
 
                     result.Pixels[(int)x, (int)y] = point;
 
@@ -55,7 +54,7 @@ namespace RayTracer.RayTracer
             return result;
         }
 
-        public View.Point RayTrace(Ray ray, double refractionIndex, int level, Color color)
+        public View.Point RayTrace(Ray ray, double refractionIndex, int level)
         {
             var collision = Trace(ray);
 
@@ -64,6 +63,7 @@ namespace RayTracer.RayTracer
                 //Lighting
                 var hitPoint = ray.Origin + (ray.Direction * collision.Distance);
                 var normal = collision.HitObject.GetNormal(hitPoint);
+                var color = new Color();
 
                 foreach (LightSource light in SceneLights)
                 {
@@ -102,10 +102,9 @@ namespace RayTracer.RayTracer
                     var reflectionDirection = (ray.Direction - (2 * (ray.Direction * normal) * normal)).Normalize();
                     var reflectionRay = new Ray(hitPoint + reflectionDirection * Globals.epsilon, reflectionDirection);
 
-                    var newPoint = RayTrace(reflectionRay, refractionIndex, level + 1, color);
-
-                    //newColor += newPoint.color * collision.HitObject.Material.ReflectionCoeff * collision.HitObject.Material.Color;
-                    color += newPoint.color * collision.HitObject.Material.ReflectionCoeff * collision.HitObject.Material.DiffuseColor;
+                    var reflectionPoint = RayTrace(reflectionRay, refractionIndex, level + 1);
+                                        
+                    color += reflectionPoint.color * collision.HitObject.Material.ReflectionCoeff * collision.HitObject.Material.DiffuseColor;
                 }
 
                 //Refraction
@@ -121,7 +120,8 @@ namespace RayTracer.RayTracer
                         var cosT = Math.Sqrt(1 - sinT2);
                         var refractionDirection = (refIndex * ray.Direction) + (refIndex * cosI - cosT) * refNormal;
                         var refractionRay = new Ray(hitPoint + refractionDirection * Globals.epsilon, refractionDirection);
-                        var refractionPoint = RayTrace(refractionRay, collision.HitObject.Material.RefractionIndex, level + 1, color);
+                        var refractionPoint = RayTrace(refractionRay, collision.HitObject.Material.RefractionIndex, level + 1);
+
                         var absorbance = collision.HitObject.Material.DiffuseColor * 0.15 * -refractionPoint.depth;
                         var transparency = new Color(Math.Exp(absorbance.R), Math.Exp(absorbance.G), Math.Exp(absorbance.B));
                         color += refractionPoint.color * transparency;
