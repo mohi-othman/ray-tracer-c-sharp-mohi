@@ -39,14 +39,13 @@ namespace RayTracer.RayTracer.Objects
                     if (Vector3D.Cross((Point2 - Point1), (x - Point1)) * _normal > 0 &&
                         Vector3D.Cross((Point3 - Point2), (x - Point2)) * _normal > 0 &&
                         Vector3D.Cross((Point1 - Point3), (x - Point3)) * _normal > 0)
-                    {
-                        var hitPoint = ray.Origin + (t * ray.Direction);
-                        return new Collision(true, false, hitPoint, this, _normal, t);
+                    {                        
+                        return new Collision(true, false, this, t);
                     }
                 }
 
             }
-            return new Collision();
+            return new Collision(false);
 
         }
 

@@ -86,7 +86,7 @@ namespace RayTracer
 
         private void Pic0()
         {
-            var camera = new ConicalCamera(new Vector3D(0, 0, -5));
+            var camera = new SimplePerspectiveCamera(new Vector3D(0, 0, -5), new Vector3D(0, 0, 1).Normalize(), new Vector3D(0, 1, 0).Normalize(), 5);
 
             var plane = new Plane(4.4, new Vector3D(0, 1, 0));
             plane.Material = new RayTracer.Materials.CustomMaterial(1, 0, 1, 0);
@@ -122,7 +122,7 @@ namespace RayTracer
             listLight.Add(light1);
             listLight.Add(light2);
 
-            var ambientLight = new RayTracer.Color(.1, .1, .1);
+            var ambientLight = new RayTracer.Color(0, 0, 0);
             scene = new RayTracer.Scene(800, 600, .05, camera, ambientLight, listObj, listLight, new RayTracer.Shaders.PhongShader(), new RayTracer.Color(0, 0, 0));
         }
 
@@ -195,15 +195,18 @@ namespace RayTracer
         {
             var objects = new List<Primitive>();
 
-            var plane = new Plane(4.4, new Vector3D(0, 1, 0));
-            plane.Material = new RayTracer.Materials.CustomMaterial(1, 0, 1, 0);
-            plane.Material.DiffuseColor = new RayTracer.Color(.4, .3, .3);
-            objects.Add(plane);
+            // ground plane
+            var groundPlane = new Plane(4.4, new Vector3D(0, 1, 0));
+            groundPlane.Material = new RayTracer.Materials.CustomMaterial(1, 0, 1, .8);
+            groundPlane.Material.DiffuseColor = new RayTracer.Color(.4, .3, .3);
+            groundPlane.Material.RefractionCoeff = 0;
+            groundPlane.Material.RefractionIndex = 0;
+            objects.Add(groundPlane);
 
             // big sphere
             var bigSphere = new Sphere(new Vector3D(2, 0.8f, 3), 2.5);
             bigSphere.Material = new RayTracer.Materials.CustomMaterial(1, .2, .2, .8);
-            bigSphere.Material.RefractionCoeff = .8;
+            bigSphere.Material.RefractionCoeff = 0.8;
             bigSphere.Material.RefractionIndex = 1.3;
             bigSphere.Material.DiffuseColor = new RayTracer.Color(0.7f, 0.7f, 1.0f);
             objects.Add(bigSphere);
@@ -219,8 +222,7 @@ namespace RayTracer
             // extra sphere
             var extraSphere = new Sphere(new Vector3D(-1.5f, -3.8f, 1), 1.5f);
             extraSphere.Material = new RayTracer.Materials.CustomMaterial(1, 0, .2, .8);
-            extraSphere.Material.RefractionCoeff = 0.8;
-            extraSphere.Material.RefractionIndex = 1.5;
+            extraSphere.Material.RefractionCoeff = 0.8;            
             extraSphere.Material.DiffuseColor = new RayTracer.Color(1.0f, 0.4f, 0.4f);
             objects.Add(extraSphere);
 
@@ -228,13 +230,14 @@ namespace RayTracer
             var backPlane = new Plane(12, new Vector3D(0.4f, 0, -1));
             backPlane.Material = new RayTracer.Materials.CustomMaterial(1, 0, .6, 0);
             backPlane.Material.RefractionCoeff = 0;
+            backPlane.Material.RefractionIndex = 0;
             backPlane.Material.DiffuseColor = new RayTracer.Color(0.5f, 0.3f, 0.5f);
-            //objects.Add(backPlane);
+            objects.Add(backPlane);
 
             // ceiling plane
-            var cPlane = new Plane(7.4, new Vector3D(0, -1, 0));
+            var cPlane = new Plane(7.4f, new Vector3D(0, -1, 0));
             cPlane.Material = new RayTracer.Materials.CustomMaterial(1, 0, .5, 0);
-            cPlane.Material.RefractionCoeff = 0;
+            cPlane.Material.RefractionCoeff = 0;            
             cPlane.Material.DiffuseColor = new RayTracer.Color(0.4f, 0.7f, 0.7f);
             //objects.Add(cPlane);
 
@@ -262,10 +265,16 @@ namespace RayTracer
             light2.Color = new RayTracer.Color(0.6f, 0.6f, 0.8f);
             lights.Add(light2);
 
+            // light source 3
+            var light3 = new RayTracer.Lights.PointLight();
+            light3.Location = new Vector3D(0, 0, 2);
+            light3.Color = new RayTracer.Color(0.6f, 0.6f, 0.8f);
+            lights.Add(light3);
+                        
             var ambientLight = new RayTracer.Color(.0, .0, .0);
-            //var camera = new SimplePerspectiveCamera(new Vector3D(0, 0, -15), new Vector3D(0, 0, 1), new Vector3D(0, 1, 0), 5);
-            var camera = new ConicalCamera(new Vector3D(0, 0, -5));
-            scene = new RayTracer.Scene(800, 600, .05, camera, ambientLight, objects, lights, new RayTracer.Shaders.PhongShader(), new RayTracer.Color(0, 0, 0));
+            var camera = new SimplePerspectiveCamera(new Vector3D(0, 0, -5), new Vector3D(0, 0, 1).Normalize(), new Vector3D(0, 1, 0).Normalize(), 5);
+            
+            scene = new RayTracer.Scene(800, 600, .01, camera, ambientLight, objects, lights, new RayTracer.Shaders.PhongShader(), new RayTracer.Color(0, 0, 0));
         }
     }
 }

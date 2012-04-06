@@ -23,7 +23,7 @@ namespace RayTracer.RayTracer.Cameras
         public override Ray GenerateRay(Vector3D target)
         {
             var direction = target - CameraLocation;
-            return new Ray(CameraLocation, direction);
+            return new Ray(CameraLocation, direction.Normalize());
         }
 
         public override View GetView(int width, int height, double PixelSize)

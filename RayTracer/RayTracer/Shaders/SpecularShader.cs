@@ -16,9 +16,9 @@ namespace RayTracer.RayTracer.Shaders
 
             var R = L - 2 * (L * N) * N;
             var dot = V * R;
-            if (dot > Globals.epsilon)
+            if (dot > 0)
             {
-                var spec = Math.Pow(dot, HitObject.Material.Exponent) * HitObject.Material.SpecularColor;
+                var spec = Math.Pow(dot, HitObject.Material.Exponent) * HitObject.Material.SpecularCoeff * HitObject.Material.SpecularColor;
                 result += spec * Light.Color;
             }
             

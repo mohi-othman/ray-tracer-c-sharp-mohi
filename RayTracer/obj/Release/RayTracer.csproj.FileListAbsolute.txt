@@ -1,0 +1,13 @@
+C:\Users\muhyedeno\Documents\RayTracerMohi\RayTracer\obj\Release\ResolveAssemblyReference.cache
+C:\Users\muhyedeno\Documents\RayTracerMohi\RayTracer\obj\Release\Window1.baml
+C:\Users\muhyedeno\Documents\RayTracerMohi\RayTracer\obj\Release\Window1.g.cs
+C:\Users\muhyedeno\Documents\RayTracerMohi\RayTracer\obj\Release\App.g.cs
+C:\Users\muhyedeno\Documents\RayTracerMohi\RayTracer\obj\Release\RayTracer_MarkupCompile.cache
+C:\Users\muhyedeno\Documents\RayTracerMohi\RayTracer\obj\Release\RayTracer.g.resources
+C:\Users\muhyedeno\Documents\RayTracerMohi\RayTracer\obj\Release\RayTracer.Properties.Resources.resources
+C:\Users\muhyedeno\Documents\RayTracerMohi\RayTracer\obj\Release\ResGen.read.1.tlog
+C:\Users\muhyedeno\Documents\RayTracerMohi\RayTracer\obj\Release\ResGen.write.1.tlog
+C:\Users\muhyedeno\Documents\RayTracerMohi\RayTracer\bin\Release\RayTracer.exe
+C:\Users\muhyedeno\Documents\RayTracerMohi\RayTracer\bin\Release\RayTracer.pdb
+C:\Users\muhyedeno\Documents\RayTracerMohi\RayTracer\obj\Release\RayTracer.exe
+C:\Users\muhyedeno\Documents\RayTracerMohi\RayTracer\obj\Release\RayTracer.pdb

@@ -8,29 +8,23 @@ namespace RayTracer.RayTracer
     public class Collision
     {
         public bool IsCollision { get; set; }
-        public bool IsInsidePrimitive { get; set; }
-        public Vector3D HitPoint { get; set; }
+        public bool IsInsidePrimitive { get; set; }        
         public Primitive HitObject { get; set; }
-        public double Distance { get; set; }
-        public Vector3D Normal { get; set; }
+        public double Distance { get; set; }        
 
-        public Collision()
-        {
-            IsCollision = false;
-            IsInsidePrimitive = false;
-            HitPoint = null;
-            HitObject = null;
-            Distance = Globals.infinity;
-            Normal = null;
-        }
-        public Collision(bool isCollision, bool isInsidePrimitive, Vector3D hitPoint, Primitive hitObject, Vector3D normal, double distance)
+        public Collision(bool isCollision)
         {
             IsCollision = isCollision;
-            IsInsidePrimitive = isInsidePrimitive;
-            HitPoint = hitPoint;
+            IsInsidePrimitive = false;            
+            HitObject = null;
+            Distance = Globals.infinity;            
+        }
+        public Collision(bool isCollision, bool isInsidePrimitive, Primitive hitObject, double distance)
+        {
+            IsCollision = isCollision;
+            IsInsidePrimitive = isInsidePrimitive;            
             HitObject = hitObject;
-            Distance = distance;
-            Normal = normal;
+            Distance = distance;            
         }        
     }
 }

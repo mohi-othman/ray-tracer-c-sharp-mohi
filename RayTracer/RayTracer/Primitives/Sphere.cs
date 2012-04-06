@@ -21,41 +21,54 @@ namespace RayTracer.RayTracer.Objects
             var B = 2 * (ray.Origin - this.Location) * ray.Direction;
             var C = (ray.Origin - this.Location) * (ray.Origin - this.Location) - Radius * Radius;
 
-            var disc = B * B - 4 * A * C;
+            var d = B * B - 4 * A * C;
+            if (d < 0)
+                return new Collision(false);
 
-            if (disc < 0)
-                return new Collision();
+            var sqrtD = Math.Sqrt(d);
 
-            var distSqrt = Math.Sqrt(disc);
             double q;
             if (B < 0)
-                q = (-B - distSqrt) / 2;
+                q = (-B - sqrtD) / 2;
             else
-                q = (-B + distSqrt) / 2;
+                q = (-B + sqrtD) / 2;
 
             var t0 = q / A;
             var t1 = C / q;
 
-            if (t0 < t1)
+            //var A = ray.Direction * ray.Direction;
+            //var B = 2 * (ray.Origin - this.Location) * ray.Direction;
+            //var C = (ray.Origin - this.Location) * (ray.Origin - this.Location) - Radius * Radius;
+
+            //var disc = B * B - 4 * A * C;
+
+            //if (disc < 0)
+            //    return new Collision();
+
+            //var distSqrt = Math.Sqrt(disc);
+
+
+            //var t0 = q / A;
+            //var t1 = C / q;
+
+            if (t0 > t1)
             {
                 var temp = t0;
                 t1 = t0;
                 t0 = temp;
             }
 
-            if (t1 < Globals.epsilon)
-                return new Collision();
+            if (t1 < 0)
+                return new Collision(false);
 
-            if (t0 < Globals.epsilon)
+            if (t0 < 0)
             {
-                var hitPoint0 = ray.Origin + (ray.Direction * t1);
-                return new Collision(true, true, hitPoint0, this, GetNormal(hitPoint0), t1);
+                //Origin inside sphere                
+                return new Collision(true, true, this, t1);
             }
 
-            var hitPoint1 = ray.Origin + (ray.Direction * t0);
-            return new Collision(true, false, hitPoint1, this, GetNormal(hitPoint1), t0);
+            return new Collision(true, false, this, t0);
 
-            
         }
 
 

@@ -38,9 +38,12 @@ namespace RayTracer.RayTracer.Materials
             _ReflectionCoeff = reflectionCoeff;
             _DiffuseCoeff = diffuseCoeff;
             _SpecularCoeff = specularCoeff;
-            TransparentColor = new Color();
-            SpecularColor = new Color();
-            ReflectiveColor = new Color();
+            TransparentColor = new Color(1,1,1);
+            SpecularColor = new Color(1,1,1);
+            ReflectiveColor = new Color(0,0,0);
+            Exponent = 20;
+            RefractionIndex = 1.5;
+            RefractionCoeff = 0;
         }
     }
 }

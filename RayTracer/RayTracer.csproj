@@ -120,7 +120,6 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="RayTracer\Cameras\Camera.cs" />
-    <Compile Include="RayTracer\Cameras\ConicalCamera.cs" />
     <Compile Include="RayTracer\Cameras\OrthographicCamera.cs" />
     <Compile Include="RayTracer\Collision.cs" />
     <Compile Include="RayTracer\Color.cs" />
