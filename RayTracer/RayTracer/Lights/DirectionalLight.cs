@@ -5,16 +5,19 @@ using System.Text;
 
 namespace RayTracer.RayTracer.Lights
 {
-    public class PointLight : Light
+    public class DirectionalLight : Light
     {
-        public PointLight(Vector3D attenuation)
+        private Vector3D _direction;
+
+        public DirectionalLight(Vector3D Direction, Vector3D attenuation)
         {
+            _direction = Direction.Normalize();
             Attenuation = attenuation;
         }
 
         public override Vector3D GetLightDirection(Vector3D targetPoint)
         {
-            return (Location - targetPoint).Normalize();
+            return -1*_direction;
         }
     }
 }

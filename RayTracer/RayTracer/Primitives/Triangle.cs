@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace RayTracer.RayTracer.Objects
+namespace RayTracer.RayTracer.Primitives
 {
     public class Triangle : Primitive
     {
@@ -39,8 +39,9 @@ namespace RayTracer.RayTracer.Objects
                     if (Vector3D.Cross((Point2 - Point1), (x - Point1)) * _normal > 0 &&
                         Vector3D.Cross((Point3 - Point2), (x - Point2)) * _normal > 0 &&
                         Vector3D.Cross((Point1 - Point3), (x - Point3)) * _normal > 0)
-                    {                        
-                        return new Collision(true, false, this, t);
+                    {
+                        var hitPoint = ray.Origin + ray.Direction * t;
+                        return new Collision(true, false, this, t, GetNormal(hitPoint), hitPoint);
                     }
                 }
 

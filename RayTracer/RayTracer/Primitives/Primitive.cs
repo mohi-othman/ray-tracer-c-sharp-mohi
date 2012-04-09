@@ -10,7 +10,7 @@ namespace RayTracer.RayTracer
 
         public Vector3D Location { get; set; }
 
-        public Materials.BaseMaterial Material { get; set; }               
+        public Materials.Material Material { get; set; }               
                 
         public abstract Collision Intersection(Ray ray);
 

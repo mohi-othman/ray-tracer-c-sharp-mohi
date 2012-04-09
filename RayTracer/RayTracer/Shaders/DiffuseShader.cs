@@ -7,7 +7,7 @@ namespace RayTracer.RayTracer.Shaders
 {
     public class DiffuseShader : Shader
     {
-        public override Color GetColor(Primitive HitObject, LightSource Light, Vector3D ViewDirection, Vector3D LightDirection, Vector3D Normal, Color AmbientColor)
+        public override Color GetColor(Primitive HitObject, Light Light, Vector3D ViewDirection, Vector3D LightDirection, Vector3D Normal)
         {
             var L = LightDirection.Normalize();
             if (HitObject.Material.DiffuseCoeff > 0)

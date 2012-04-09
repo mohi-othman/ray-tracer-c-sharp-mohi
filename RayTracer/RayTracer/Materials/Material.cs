@@ -5,7 +5,7 @@ using System.Text;
 
 namespace RayTracer.RayTracer.Materials
 {
-    public abstract class BaseMaterial
+    public abstract class Material
     {
         public abstract double AmbientCoeff { get; }
         public abstract double ReflectionCoeff { get; }

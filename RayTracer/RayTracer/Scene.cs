@@ -13,12 +13,12 @@ namespace RayTracer.RayTracer
         public Color AmbientLight { get; set; }
         public Camera SceneCamera { get; set; }
         public List<Primitive> SceneObjects { get; set; }
-        public List<LightSource> SceneLights { get; set; }
+        public List<Light> SceneLights { get; set; }
         public Vector3D TopLeftOrigin { get; set; }
         public Shaders.Shader SceneShader { get; set; }
         public Color BackgroundColor { get; set; }
 
-        public Scene(int sizeX, int sizeY, double pixelSize, Camera sceneCamera, Color ambientLight, List<Primitive> sceneObjects, List<LightSource> sceneLights, Shaders.Shader sceneShader, Color backgroundColor)
+        public Scene(int sizeX, int sizeY, double pixelSize, Camera sceneCamera, Color ambientLight, List<Primitive> sceneObjects, List<Light> sceneLights, Shaders.Shader sceneShader, Color backgroundColor)
         {
             SizeX = sizeX;
             SizeY = sizeY;
@@ -61,38 +61,21 @@ namespace RayTracer.RayTracer
             if (collision.IsCollision)
             {
                 //Lighting
-                var hitPoint = ray.Origin + (ray.Direction * collision.Distance);
-                var normal = collision.HitObject.GetNormal(hitPoint);
+                var hitPoint = collision.HitPoint;
+                var normal = collision.Normal;
                 var color = new Color();
 
-                foreach (LightSource light in SceneLights)
+                foreach (Light light in SceneLights)
                 {
-
-                    var dist = light.Location - hitPoint;
-                    if (normal * dist <= 0)
-                        continue; //light source is behind 
-
-                    var t = dist.Distance();
-                    if (t < 0)
-                        continue; //Avoid division by zero
-                    var lightDir = ((1 / t) * dist).Normalize();
+                    var lightDir = light.GetLightDirection(hitPoint);
                     var lightRay = new Ray(hitPoint + lightDir * Globals.epsilon, lightDir);
-                    bool shade = false;
+                    
                     //Check if object in shadows
-                    //var shadowCollision = Trace(lightRay);
-                    foreach (Primitive obj in SceneObjects)
+                    var shadowCollision = Trace(lightRay);
+                   
+                    if (!shadowCollision.IsCollision)                    
                     {
-                        if (obj.Intersection(lightRay).IsCollision)
-                        {
-                            shade = true;
-                            break;
-                        }
-                    }
-
-                    //if (!shadowCollision.IsCollision)
-                    if (!shade)
-                    {
-                        color += SceneShader.GetColor(collision.HitObject, light, ray.Direction, lightRay.Direction, normal, AmbientLight);
+                        color += SceneShader.GetColor(collision.HitObject, light, ray.Direction, lightRay.Direction, normal);
                     }
                 }
 

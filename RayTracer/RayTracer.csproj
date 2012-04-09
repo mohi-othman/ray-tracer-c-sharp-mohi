@@ -79,9 +79,7 @@
     </ApplicationDefinition>
     <Page Include="Window1.xaml">
       <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
+      <SubType>Designer</SubType>      
     </Page>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
@@ -89,12 +87,16 @@
     </Compile>
     <Compile Include="RayTracer\Cameras\PersopectiveCamera.cs" />
     <Compile Include="RayTracer\Cameras\SimplePerspectiveCamera.cs" />
+    <Compile Include="RayTracer\Lights\DirectionalLight.cs" />
     <Compile Include="RayTracer\Lights\PointLight.cs" />
-    <Compile Include="RayTracer\Materials\BaseMaterial.cs" />
+    <Compile Include="RayTracer\Materials\Material.cs" />
     <Compile Include="RayTracer\Materials\CustomMaterial.cs" />
     <Compile Include="RayTracer\Materials\PhongMaterial.cs" />
+    <Compile Include="RayTracer\Primitives\BoundingBox.cs" />
+    <Compile Include="RayTracer\Primitives\Mesh\FaceList.cs" />
     <Compile Include="RayTracer\Primitives\Plane.cs" />
     <Compile Include="RayTracer\Primitives\Triangle.cs" />
+    <Compile Include="RayTracer\Primitives\TriangleMesh.cs" />
     <Compile Include="RayTracer\Shaders\DiffuseShader.cs" />
     <Compile Include="RayTracer\Shaders\PhongIllumination.cs" />
     <Compile Include="RayTracer\Shaders\PhongShader.cs" />
@@ -124,8 +126,8 @@
     <Compile Include="RayTracer\Collision.cs" />
     <Compile Include="RayTracer\Color.cs" />
     <Compile Include="RayTracer\Globals.cs" />
-    <Compile Include="RayTracer\Lights\LightSource.cs" />
-    <Compile Include="RayTracer\Primitives\SolidObject.cs" />
+    <Compile Include="RayTracer\Lights\Light.cs" />
+    <Compile Include="RayTracer\Primitives\Primitive.cs" />
     <Compile Include="RayTracer\Primitives\Sphere.cs" />
     <Compile Include="RayTracer\View.cs" />
     <Compile Include="RayTracer\Ray.cs" />
@@ -158,6 +160,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

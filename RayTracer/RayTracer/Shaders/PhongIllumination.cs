@@ -7,18 +7,24 @@ namespace RayTracer.RayTracer.Shaders
 {
     public class PhongIllumination : Shader
     {
-        public override Color GetColor(Primitive HitObject, LightSource Light, Vector3D ViewDirection, Vector3D LightDirection, Vector3D Normal, Color AmbientColor)
+        public override Color GetColor(Primitive HitObject, Light Light, Vector3D ViewDirection, Vector3D LightDirection, Vector3D Normal)
         {
             var m = HitObject.Material;
             var a = Light.Attenuation.x;
             var b = Light.Attenuation.y;
             var c = Light.Attenuation.z;
             var d = LightDirection.Distance();
-            var att = 1 / (1 + b * d + c * d * d);
+            var att = 1 / (a + b * d + c * d * d);
 
-            var reflection = (2 * Normal * (Normal * LightDirection) - LightDirection).Normalize();
+            var reflectedLight = (Normal * LightDirection);
+            if (reflectedLight < 0)
+                return HitObject.Material.DiffuseColor;
 
-            var result = AmbientColor * m.AmbientCoeff * m.DiffuseCoeff + att * Light.Color * (m.DiffuseCoeff * m.DiffuseColor * (Normal * LightDirection) + m.SpecularCoeff * m.SpecularColor * Math.Pow(reflection * ViewDirection, m.Exponent));
+            //get diffused color
+            var result = HitObject.Material.DiffuseColor * reflectedLight * Light.Color * att;
+
+            //get specular
+            result += (new SpecularShader().GetColor(HitObject, Light, ViewDirection, LightDirection, Normal));
 
             return result;
         }

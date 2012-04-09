@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace RayTracer.RayTracer.Objects
+namespace RayTracer.RayTracer.Primitives
 {
     class Sphere : Primitive
     {
@@ -36,21 +36,6 @@ namespace RayTracer.RayTracer.Objects
             var t0 = q / A;
             var t1 = C / q;
 
-            //var A = ray.Direction * ray.Direction;
-            //var B = 2 * (ray.Origin - this.Location) * ray.Direction;
-            //var C = (ray.Origin - this.Location) * (ray.Origin - this.Location) - Radius * Radius;
-
-            //var disc = B * B - 4 * A * C;
-
-            //if (disc < 0)
-            //    return new Collision();
-
-            //var distSqrt = Math.Sqrt(disc);
-
-
-            //var t0 = q / A;
-            //var t1 = C / q;
-
             if (t0 > t1)
             {
                 var temp = t0;
@@ -64,14 +49,15 @@ namespace RayTracer.RayTracer.Objects
             if (t0 < 0)
             {
                 //Origin inside sphere                
-                return new Collision(true, true, this, t1);
+                var hitPoint1 = ray.Origin + ray.Direction * t1;
+                return new Collision(true, true, this, t1, GetNormal(hitPoint1), hitPoint1);
             }
 
-            return new Collision(true, false, this, t0);
+            var hitPoint0 = ray.Origin + ray.Direction * t0;
+            return new Collision(true, false, this, t0, GetNormal(hitPoint0), hitPoint0);
 
         }
-
-
+        
 
         public override Vector3D GetNormal(Vector3D point)
         {

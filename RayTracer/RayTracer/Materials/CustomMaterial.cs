@@ -5,7 +5,7 @@ using System.Text;
 
 namespace RayTracer.RayTracer.Materials
 {
-    public class CustomMaterial : BaseMaterial
+    public class CustomMaterial : Material
     {
         double _AmbientCoeff = 0;
         double _ReflectionCoeff = 0;

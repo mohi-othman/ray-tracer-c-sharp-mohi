@@ -5,7 +5,7 @@ using System.Text;
 
 namespace RayTracer.RayTracer.Materials
 {
-    public class PhongMaterial : BaseMaterial
+    public class PhongMaterial : Material
     {
         public override double AmbientCoeff
         {

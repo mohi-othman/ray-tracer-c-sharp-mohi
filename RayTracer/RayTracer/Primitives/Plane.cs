@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace RayTracer.RayTracer.Objects
+namespace RayTracer.RayTracer.Primitives
 {
     public class Plane : Primitive
     {
@@ -19,7 +19,7 @@ namespace RayTracer.RayTracer.Objects
                 if (dist > 0)
                 {
                     var hitPoint = ray.Origin + (dist * ray.Direction.Normalize());
-                    return new Collision(true, false, this, dist);
+                    return new Collision(true, false, this, dist, GetNormal(null), hitPoint);
                 }
             }
             return new Collision(false);
