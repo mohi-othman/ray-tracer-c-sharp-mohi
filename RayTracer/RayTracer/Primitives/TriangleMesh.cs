@@ -8,7 +8,7 @@ namespace RayTracer.RayTracer.Primitives
     public class TriangleMesh : Primitive
     {
         private BoundingBox _boundingBox;
-        private List<Triangle> _triangles=new List<Triangle>();
+        private List<Triangle> _triangles = new List<Triangle>();
 
         public TriangleMesh(Primitives.Mesh.FaceList faceList)
         {
@@ -49,7 +49,7 @@ namespace RayTracer.RayTracer.Primitives
                     var c = t.Intersection(ray);
                     if (c.IsCollision)
                     {
-                        if (c.Distance < minT)
+                        if (c.Distance>0 && c.Distance < minT)
                         {
                             hit = c;
                             minT = c.Distance;
@@ -58,8 +58,9 @@ namespace RayTracer.RayTracer.Primitives
                 }
 
                 if (hit != null)
-                    return new Collision(true, false, this, hit.Distance, hit.Normal,hit.HitPoint);
-
+                    return new Collision(true, false, this, hit.Distance, hit.Normal, hit.HitPoint);
+                else
+                    return new Collision(false);
             }
             return new Collision(false);
         }

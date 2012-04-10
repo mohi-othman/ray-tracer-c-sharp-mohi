@@ -16,6 +16,7 @@ namespace RayTracer.RayTracer.Primitives
             _minVector = MinVector;
         }
 
+
         public override Collision Intersection(Ray ray)
         {
             bool fRet = false;
