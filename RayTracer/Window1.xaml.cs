@@ -129,7 +129,7 @@ namespace RayTracer
             listLight.Add(light3);
 
             var ambientLight = new RayTracer.Color(0, 0, 0);
-            scene = new RayTracer.Scene(800, 600, .05, camera, ambientLight, listObj, listLight, new RayTracer.Shaders.PhongIllumination(), new RayTracer.Color(0, 0, 0));
+            scene = new RayTracer.Scene(800, 600, 8.0/800.0 , camera, ambientLight, listObj, listLight, new RayTracer.Shaders.PhongIllumination(), new RayTracer.Color(0, 0, 0));
         }
 
         private void Pic1()
@@ -223,14 +223,14 @@ namespace RayTracer
             smallSphere.Material.RefractionCoeff = 0;
             smallSphere.Material.RefractionIndex = 1.3;
             smallSphere.Material.DiffuseColor = new RayTracer.Color(.7, .7, 1);
-            objects.Add(smallSphere);
+            //objects.Add(smallSphere);
 
             // extra sphere
             var extraSphere = new Sphere(new Vector3D(-1.5f, -3.8f, 1), 1.5f);
             extraSphere.Material = new RayTracer.Materials.CustomMaterial(1, 0, .2, .8);
             extraSphere.Material.RefractionCoeff = 0.8;
             extraSphere.Material.DiffuseColor = new RayTracer.Color(1.0f, 0.4f, 0.4f);
-            objects.Add(extraSphere);
+            //objects.Add(extraSphere);
 
             // back plane
             var backPlane = new Plane(12, new Vector3D(0.4f, 0, -1));
@@ -315,7 +315,7 @@ namespace RayTracer
             mesh.Material.RefractionCoeff = 0;
             mesh.Material.RefractionIndex = 0;
 
-            objects.Add(mesh);
+            //objects.Add(mesh);
 
             scene = new RayTracer.Scene(800, 600, .01, camera, ambientLight, objects, lights, new RayTracer.Shaders.PhongIllumination(), new RayTracer.Color(0, 0, 0));
         }
@@ -395,9 +395,54 @@ namespace RayTracer
             mesh.Material.RefractionCoeff = 0;
             mesh.Material.RefractionIndex = 0;
 
-            listObj.Add(mesh);
+            //listObj.Add(mesh);
             var ambientLight = new RayTracer.Color(.2, .2, .2);
             scene = new RayTracer.Scene(800, 600, .05, camera, ambientLight, listObj, listLight, new RayTracer.Shaders.PhongIllumination(), new RayTracer.Color(0, 0, 0));
+        }
+
+        private void Pic4()
+        {
+            var camera = new SimplePerspectiveCamera(new Vector3D(0, 0, 8), new Vector3D(0, 0, -1).Normalize(), new Vector3D(0, 1, 0).Normalize(), 5);
+
+            var plane = new Plane(-2, new Vector3D(0, 1, 0));
+            plane.Material = new RayTracer.Materials.CustomMaterial(1, 0, 1, .8);
+            plane.Material.DiffuseColor = new RayTracer.Color(.10, .35, .1);
+            plane.Material.SpecularColor = new RayTracer.Color(.45, .55, .45);
+            plane.Material.Exponent = 1;
+            plane.Material.RefractionIndex = 0;
+            
+            var sphere1 = new Sphere(new Vector3D(0, 0, 0), 1.0);
+            sphere1.Material = new RayTracer.Materials.CustomMaterial(1, 0, 1, .8);
+            sphere1.Material.DiffuseColor = new RayTracer.Color(0, 0, .2);
+            sphere1.Material.SpecularColor = new RayTracer.Color(.7, .7, .7);
+            sphere1.Material.Exponent = 64;
+            sphere1.Material.RefractionIndex = 1.5;
+            sphere1.Material.TransparentColor = new RayTracer.Color(1, 1, 1);
+
+            var sphere2 = new Sphere(new Vector3D(1, 0, -2), 1);
+            sphere2.Material = new RayTracer.Materials.CustomMaterial(1, 0, 1, .8);
+            sphere2.Material.DiffuseColor = new RayTracer.Color(0.2, 0.2, .2);
+            sphere2.Material.SpecularColor = new RayTracer.Color(.5, .5, .5);
+            sphere2.Material.Exponent = 64;
+            sphere2.Material.ReflectiveColor = new RayTracer.Color(.5, .5, .5);
+            
+            
+            var listObj = new List<Primitive>();
+            listObj.Add(sphere1);
+            listObj.Add(sphere2);
+            listObj.Add(plane);
+
+
+            var light1 = new RayTracer.Lights.PointLight(new Vector3D(1, .5, .5));
+            light1.Location = new Vector3D(0, 10, 2);
+            light1.Color = new RayTracer.Color(1, 1, 1);
+
+                        
+            var listLight = new List<Light>();
+            listLight.Add(light1);
+            
+            var ambientLight = new RayTracer.Color(0, 0, 0);
+            scene = new RayTracer.Scene(1000, 1000, 0.0040, camera, ambientLight, listObj, listLight, new RayTracer.Shaders.PhongShader(), new RayTracer.Color(0.1, 0.1, 0.1));
         }
     }
 }

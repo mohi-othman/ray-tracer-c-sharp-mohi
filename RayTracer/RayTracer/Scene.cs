@@ -36,9 +36,9 @@ namespace RayTracer.RayTracer
             var result = SceneCamera.GetView(SizeX, SizeY, PixelSize);
             var level = 0;
 
-            for (int x = 0; x < SizeX; x++)
+            for (int y = 0; y < SizeY; y++) 
             {
-                for (int y = 0; y < SizeY; y++)
+                for (int x = 0; x < SizeX; x++)
                 {                   
                     var targetPixel = result.Pixels[x, y].realCoordinate;
 
