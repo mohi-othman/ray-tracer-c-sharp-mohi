@@ -79,7 +79,7 @@
     </ApplicationDefinition>
     <Page Include="Window1.xaml">
       <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>      
+      <SubType>Designer</SubType>
     </Page>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
@@ -91,6 +91,12 @@
     <Compile Include="RayTracer\Lights\PointLight.cs" />
     <Compile Include="RayTracer\Materials\Material.cs" />
     <Compile Include="RayTracer\Materials\CustomMaterial.cs" />
+    <Compile Include="RayTracer\Matrices\BezierTranslationMatrix.cs" />
+    <Compile Include="RayTracer\Matrices\RotationMatrix.cs" />
+    <Compile Include="RayTracer\Matrices\ScalingMatrix.cs" />
+    <Compile Include="RayTracer\Matrices\TranslationMatrix.cs" />
+    <Compile Include="RayTracer\Matrices\Vector3DMatrix.cs" />
+    <Compile Include="RayTracer\Matrices\TransformationMatrix.cs" />
     <Compile Include="RayTracer\Materials\PhongMaterial.cs" />
     <Compile Include="RayTracer\Primitives\BoundingBox.cs" />
     <Compile Include="RayTracer\Primitives\Mesh\FaceList.cs" />

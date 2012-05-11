@@ -17,6 +17,7 @@ namespace RayTracer.RayTracer
         public Vector3D TopLeftOrigin { get; set; }
         public Shaders.Shader SceneShader { get; set; }
         public Color BackgroundColor { get; set; }
+        public double TransformationScalingFactor { get; set; }
 
         public Scene(int sizeX, int sizeY, double pixelSize, Camera sceneCamera, Color ambientLight, List<Primitive> sceneObjects, List<Light> sceneLights, Shaders.Shader sceneShader, Color backgroundColor)
         {
@@ -29,6 +30,8 @@ namespace RayTracer.RayTracer
             SceneShader = sceneShader;
             BackgroundColor = backgroundColor;
             PixelSize = pixelSize;
+
+            TransformationScalingFactor = 1;//default
         }
 
         public View Render()
@@ -36,10 +39,10 @@ namespace RayTracer.RayTracer
             var result = SceneCamera.GetView(SizeX, SizeY, PixelSize);
             var level = 0;
 
-            for (int y = 0; y < SizeY; y++) 
+            for (int y = 0; y < SizeY; y++)
             {
                 for (int x = 0; x < SizeX; x++)
-                {                   
+                {
                     var targetPixel = result.Pixels[x, y].realCoordinate;
 
                     var ray = SceneCamera.GenerateRay(targetPixel);
@@ -54,8 +57,27 @@ namespace RayTracer.RayTracer
             return result;
         }
 
+        public List<View> Animate(double timeFrame, int fps)
+        {
+            var frameCount = (int)Math.Floor(timeFrame * fps);
+            var deltaScale = 1.0 / (frameCount-1);
+            var currentScale = 0.0;
+
+            var result = new List<View>();
+
+            for (int i = 0; i < frameCount; i++)
+            {                
+                TransformationScalingFactor = currentScale;
+                var v = Render();
+                result.Add(v);
+                currentScale += deltaScale;
+            }
+
+            return result;
+        }
+
         public View.Point RayTrace(Ray ray, double refractionIndex, int level)
-        {            
+        {
             var collision = Trace(ray);
 
             if (collision.IsCollision)
@@ -75,7 +97,7 @@ namespace RayTracer.RayTracer
 
                     if (!shadowCollision.IsCollision)
                     {
-                        color += SceneShader.GetColor(collision.HitObject, light, ray.Direction, lightRay.Direction, normal);                        
+                        color += SceneShader.GetColor(collision.HitObject, light, ray.Direction, lightRay.Direction, normal);
                     }
                 }
 
@@ -137,7 +159,27 @@ namespace RayTracer.RayTracer
 
             foreach (Primitive obj in SceneObjects)
             {
-                var c = obj.Intersection(ray);
+                var intersectRay = new Ray(ray.Origin, ray.Direction);
+
+                foreach (TransformationMatrix t in obj.Transformations)
+                {
+                    var transform = t.ScaleMatrix(TransformationScalingFactor);
+
+                    var invTransform = transform.GetInverse();
+                    var dirMatrix = new Vector3DMatrix();
+                    var originMatrix = new Vector3DMatrix();
+
+                    dirMatrix.FromVector(intersectRay.Direction);
+                    originMatrix.FromPoint(intersectRay.Origin);
+
+                    var invDir = dirMatrix.Transform(invTransform);
+                    var invOrigin = originMatrix.Transform(invTransform);
+
+                    intersectRay.Direction = invDir.ToVector3D();
+                    intersectRay.Origin = invOrigin.ToVector3D();
+                }
+
+                var c = obj.Intersection(intersectRay);
                 if (c.IsCollision && c.Distance < minT)
                 {
                     minT = c.Distance;
@@ -149,6 +191,20 @@ namespace RayTracer.RayTracer
                 return new Collision(false);
             else
             {
+                foreach (TransformationMatrix transform in hit.HitObject.Transformations)
+                {
+                    var normalMatrix = new Vector3DMatrix();
+                    var hitpointMatrix = new Vector3DMatrix();
+
+                    normalMatrix.FromVector(hit.Normal);
+                    hitpointMatrix.FromPoint(hit.HitPoint);
+
+                    var invNormal = normalMatrix.TransformNormal(transform);
+                    var invHitpoint = hitpointMatrix.Transform(transform);
+
+                    hit.Normal = invNormal.ToVector3D();
+                    hit.HitPoint = invHitpoint.ToVector3D();
+                }
                 return hit;
             }
 

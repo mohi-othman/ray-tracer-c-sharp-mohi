@@ -31,18 +31,29 @@ namespace RayTracer
 
         public Window1()
         {
+
             InitializeComponent();
 
             label1.Content = "";
             var t = DateTime.Now;
 
-            Pic2();
+            Pic6();
 
             string error = "";
+            int i = 0;
             try
             {
-                pic = scene.Render();
-                OutPutPic();
+                var r = scene.Animate(2, 10);
+                foreach (View v in r)
+                {
+                    var img = v.ExportImage();
+                    img.Save("c:\\test\\image" + i.ToString("00") + ".jpg", System.Drawing.Imaging.ImageFormat.Jpeg);
+                    i++;
+                }
+                //scene.TransformationScalingFactor = 1;
+                //pic = scene.Render();
+                //pic.ExportImage().Save("c:\\test\\image.jpg", System.Drawing.Imaging.ImageFormat.Jpeg);
+                //OutPutPic();
             }
             catch (Exception e)
             {
@@ -129,7 +140,7 @@ namespace RayTracer
             listLight.Add(light3);
 
             var ambientLight = new RayTracer.Color(0, 0, 0);
-            scene = new RayTracer.Scene(800, 600, 8.0/800.0 , camera, ambientLight, listObj, listLight, new RayTracer.Shaders.PhongIllumination(), new RayTracer.Color(0, 0, 0));
+            scene = new RayTracer.Scene(800, 600, 8.0 / 800.0, camera, ambientLight, listObj, listLight, new RayTracer.Shaders.PhongIllumination(), new RayTracer.Color(0, 0, 0));
         }
 
         private void Pic1()
@@ -410,7 +421,7 @@ namespace RayTracer
             plane.Material.SpecularColor = new RayTracer.Color(.45, .55, .45);
             plane.Material.Exponent = 1;
             plane.Material.RefractionIndex = 0;
-            
+
             var sphere1 = new Sphere(new Vector3D(0, 0, 0), 1.0);
             sphere1.Material = new RayTracer.Materials.CustomMaterial(1, 0, 1, .8);
             sphere1.Material.DiffuseColor = new RayTracer.Color(0, 0, .2);
@@ -425,8 +436,8 @@ namespace RayTracer
             sphere2.Material.SpecularColor = new RayTracer.Color(.5, .5, .5);
             sphere2.Material.Exponent = 64;
             sphere2.Material.ReflectiveColor = new RayTracer.Color(.5, .5, .5);
-            
-            
+
+
             var listObj = new List<Primitive>();
             listObj.Add(sphere1);
             listObj.Add(sphere2);
@@ -437,12 +448,113 @@ namespace RayTracer
             light1.Location = new Vector3D(0, 10, 2);
             light1.Color = new RayTracer.Color(1, 1, 1);
 
-                        
+
             var listLight = new List<Light>();
             listLight.Add(light1);
-            
+
             var ambientLight = new RayTracer.Color(0, 0, 0);
             scene = new RayTracer.Scene(1000, 1000, 0.0040, camera, ambientLight, listObj, listLight, new RayTracer.Shaders.PhongShader(), new RayTracer.Color(0.1, 0.1, 0.1));
+        }
+
+        private void Pic5()
+        {
+            var camera = new OrthographicCamera(new Vector3D(0, 0, -10), new Vector3D(0, 0, 1), new Vector3D(0, 1, 0));
+
+            var sphere1 = new Sphere(new Vector3D(0, 0, 0), 1.0);
+            sphere1.Material = new RayTracer.Materials.CustomMaterial(1, 0, 1, .8);
+            sphere1.Material.DiffuseColor = new RayTracer.Color(0, 0, .2);
+            sphere1.Material.SpecularColor = new RayTracer.Color(.7, .7, .7);
+            sphere1.Material.Exponent = 64;
+            sphere1.Material.RefractionIndex = 1.5;
+            sphere1.Material.TransparentColor = new RayTracer.Color(1, 1, 1);
+
+            var tMatrix = new TranslationMatrix(2, .6, 2);
+            sphere1.Transformations.Add(tMatrix);
+
+            var sMatrix = new ScalingMatrix(1, .5, .5, sphere1.Location);
+            sphere1.Transformations.Add(sMatrix);
+
+            var f = new RayTracer.Primitives.Mesh.FaceList();
+
+            f.Vertices.Add(new Vector3D(1.0, 1.0, 1.0));
+            f.Vertices.Add(new Vector3D(1.0, 1.0, -1.0));
+            f.Vertices.Add(new Vector3D(-1.0, 1.0, -1.0));
+            f.Vertices.Add(new Vector3D(-1.0, 1.0, 1.0));
+            f.Vertices.Add(new Vector3D(1.0, -1.0, 1.0));
+            f.Vertices.Add(new Vector3D(1.0, -1.0, -1.0));
+            f.Vertices.Add(new Vector3D(-1.0, -1.0, -1.0));
+            f.Vertices.Add(new Vector3D(-1.0, -1.0, 1.0));
+
+            for (int i = 0; i < f.Vertices.Count; i++)
+            {
+                f.Vertices[i] += new Vector3D(-1.5, 0, 0);
+            }
+
+            f.Faces.Add(new int[] { 3, 2, 1 });
+            f.Faces.Add(new int[] { 1, 2, 5 });
+            f.Faces.Add(new int[] { 2, 6, 5 });
+            f.Faces.Add(new int[] { 4, 5, 6 });
+            f.Faces.Add(new int[] { 7, 4, 6 });
+            f.Faces.Add(new int[] { 2, 3, 7 });
+            f.Faces.Add(new int[] { 7, 6, 2 });
+            f.Faces.Add(new int[] { 1, 5, 4 });
+            f.Faces.Add(new int[] { 4, 7, 3 });
+            f.Faces.Add(new int[] { 4, 3, 0 });
+            f.Faces.Add(new int[] { 0, 1, 4 });
+            f.Faces.Add(new int[] { 3, 1, 0 });
+
+            var mesh = new TriangleMesh(f);
+            mesh.Material = new RayTracer.Materials.CustomMaterial(1, 0, .1, .8);
+            mesh.Material.DiffuseColor = new RayTracer.Color(.5, .3, 0);
+            mesh.Material.RefractionCoeff = 0;
+            mesh.Material.RefractionIndex = 0;
+
+            var rMatrix = new RotationMatrix(6.5, new Vector3D(0,1,1), new Vector3D(1,1,1));
+            
+            mesh.Transformations.Add(rMatrix);
+
+            var listObj = new List<Primitive>();
+            listObj.Add(sphere1);
+            listObj.Add(mesh);
+
+            var light1 = new RayTracer.Lights.PointLight(new Vector3D(1, .5, .5));
+            light1.Location = new Vector3D(0, 10, -2);
+            light1.Color = new RayTracer.Color(1, 1, 1);
+
+            var listLight = new List<Light>();
+            listLight.Add(light1);
+
+            var ambientLight = new RayTracer.Color(0.2, 0.2, 0.2);
+            scene = new RayTracer.Scene(600, 400, 0.01, camera, ambientLight, listObj, listLight, new RayTracer.Shaders.PhongIllumination(), new RayTracer.Color(0.1, 0.1, 0.1));
+        }
+
+        private void Pic6()
+        {
+            var camera = new OrthographicCamera(new Vector3D(0, 0, -10), new Vector3D(0, 0, 1), new Vector3D(0, 1, 0));
+
+            var sphere1 = new Sphere(new Vector3D(0, 0, 0), .2);
+            sphere1.Material = new RayTracer.Materials.CustomMaterial(1, 0, 1, .8);
+            sphere1.Material.DiffuseColor = new RayTracer.Color(0, 0, .2);
+            sphere1.Material.SpecularColor = new RayTracer.Color(.7, .7, .7);
+            sphere1.Material.Exponent = 64;
+            sphere1.Material.RefractionIndex = 1.5;
+            sphere1.Material.TransparentColor = new RayTracer.Color(1, 1, 1);
+
+            var tMatrix = new BezierTranslationMatrix(new Vector3D(.5, .5, .5), new Vector3D(3.8, -1.8, 1.7), new Vector3D(4, -2, 2));
+            sphere1.Transformations.Add(tMatrix);
+                       
+            var listObj = new List<Primitive>();
+            listObj.Add(sphere1);
+            
+            var light1 = new RayTracer.Lights.PointLight(new Vector3D(1, .5, .5));
+            light1.Location = new Vector3D(0, 10, -2);
+            light1.Color = new RayTracer.Color(1, 1, 1);
+
+            var listLight = new List<Light>();
+            listLight.Add(light1);
+
+            var ambientLight = new RayTracer.Color(0.2, 0.2, 0.2);
+            scene = new RayTracer.Scene(600, 400, 0.015, camera, ambientLight, listObj, listLight, new RayTracer.Shaders.PhongIllumination(), new RayTracer.Color(0.1, 0.1, 0.1));
         }
     }
 }
