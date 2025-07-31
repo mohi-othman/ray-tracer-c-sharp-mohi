@@ -49,3 +49,11 @@ C:\Users\Mohi\Documents\Visual Studio 2010\Projects\RayTraceMohi_CSharp\RayTrace
 C:\Users\Mohi\Documents\Visual Studio 2010\Projects\RayTraceMohi_CSharp\RayTracer\obj\Debug\ResGen.write.1.tlog
 C:\Users\Mohi\Documents\Visual Studio 2010\Projects\RayTraceMohi_CSharp\RayTracer\bin\Debug\RayTracer.exe
 C:\Users\Mohi\Documents\Visual Studio 2010\Projects\RayTraceMohi_CSharp\RayTracer\bin\Debug\RayTracer.pdb
+C:\Projects\ray-tracer-c-sharp-mohi\RayTracer\obj\Debug\RayTracer.csproj.AssemblyReference.cache
+C:\Projects\ray-tracer-c-sharp-mohi\RayTracer\obj\Debug\RayTracer.Properties.Resources.resources
+C:\Projects\ray-tracer-c-sharp-mohi\RayTracer\obj\Debug\RayTracer.csproj.GenerateResource.cache
+C:\Projects\ray-tracer-c-sharp-mohi\RayTracer\obj\Debug\RayTracer.csproj.CoreCompileInputs.cache
+C:\Projects\ray-tracer-c-sharp-mohi\RayTracer\obj\Debug\RayTracer.pdb
+C:\Projects\ray-tracer-c-sharp-mohi\RayTracer\bin\Debug\RayTracer.dll
+C:\Projects\ray-tracer-c-sharp-mohi\RayTracer\bin\Debug\RayTracer.pdb
+C:\Projects\ray-tracer-c-sharp-mohi\RayTracer\obj\Debug\RayTracer.dll
